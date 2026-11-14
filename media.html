@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media · Catálogo de Media</title>
+  <meta name="description" content="Administración de películas y series del catálogo.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <div class="cabecera-interior">
+      <p class="marca">Catálogo de Media</p>
+      <nav aria-label="Principal">
+        <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="generos.html">Géneros</a></li>
+        <li><a href="directores.html">Directores</a></li>
+        <li><a href="productoras.html">Productoras</a></li>
+        <li><a href="tipos.html">Tipos</a></li>
+        <li><a href="media.html" aria-current="page">Media</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <h1>Media</h1>
+    <p class="intro">Películas y series del catálogo. Cada producción lleva Tipo, Director, Productora y de 1 a 5 géneros.</p>
+
+    <section class="panel" aria-labelledby="titulo-formulario">
+      <h2 id="titulo-formulario">Nueva producción</h2>
+      <form id="formulario">
+        <div class="rejilla">
+        <div class="campo">
+          <label for="serial">Serial <span class="obligatorio">(obligatorio)</span></label>
+          <input id="serial" name="serial" type="text" required aria-describedby="serial-ayuda" maxlength="60" autocomplete="off">
+          <p class="ayuda" id="serial-ayuda">Código único de la producción. No se puede repetir.</p>
+        </div>
+        <div class="campo">
+          <label for="titulo">Título <span class="obligatorio">(obligatorio)</span></label>
+          <input id="titulo" name="titulo" type="text" required maxlength="200" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="anoEstreno">Año de estreno <span class="obligatorio">(obligatorio)</span></label>
+          <input id="anoEstreno" name="anoEstreno" type="number" required min="1888" max="2100" step="1" inputmode="numeric">
+        </div>
+        <div class="campo">
+          <label for="tipo">Tipo <span class="obligatorio">(obligatorio)</span></label>
+          <select id="tipo" name="tipo" required></select>
+        </div>
+        <div class="campo">
+          <label for="director">Director <span class="obligatorio">(obligatorio)</span></label>
+          <select id="director" name="director" required></select>
+        </div>
+        <div class="campo">
+          <label for="productora">Productora <span class="obligatorio">(obligatorio)</span></label>
+          <select id="productora" name="productora" required></select>
+        </div>
+        <div class="campo">
+          <label for="url">URL de la producción <span class="obligatorio">(obligatorio)</span></label>
+          <input id="url" name="url" type="url" required aria-describedby="url-ayuda" placeholder="https://…" autocomplete="off">
+          <p class="ayuda" id="url-ayuda">Enlace único (http o https). No se puede repetir.</p>
+        </div>
+        <div class="campo">
+          <label for="portada">URL de la portada</label>
+          <input id="portada" name="portada" type="url" placeholder="https://…" autocomplete="off">
+        </div>
+        <div class="campo campo-ancho">
+          <label for="sinopsis">Sinopsis <span class="obligatorio">(obligatorio)</span></label>
+          <textarea id="sinopsis" name="sinopsis" rows="4" required ></textarea>
+        </div>
+        <fieldset class="campo campo-ancho grupo-generos">
+          <legend>Géneros <span class="obligatorio">(obligatorio: de 1 a 5)</span></legend>
+          <p class="ayuda" id="generos-ayuda">Solo aparecen los géneros activos.</p>
+          <div id="lista-generos" class="lista-generos" aria-describedby="generos-ayuda"></div>
+          <p id="contador-generos" class="contador" aria-live="polite"></p>
+        </fieldset>
+        </div>
+        <div class="botones">
+          <button id="btn-guardar" class="boton boton-primario" type="submit">Crear</button>
+          <button id="btn-cancelar" class="boton boton-secundario" type="button" hidden>Cancelar edición</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="mensaje"></div>
+
+    <section class="panel" aria-labelledby="titulo-listado">
+      <div class="listado-cabecera">
+        <h2 id="titulo-listado">Producciones</h2>
+        <p id="contador" class="contador" aria-live="polite"></p>
+      </div>
+      <div class="filtro">
+        <label for="filtro-genero">Filtrar por género</label>
+        <select id="filtro-genero"><option value="">Todos los géneros</option></select>
+      </div>
+      <p id="estado-carga">Cargando…</p>
+      <div class="tabla-contenedor">
+        <table id="tabla" hidden>
+          <caption class="solo-lectores">Producciones registrados</caption>
+          <thead>
+            <tr>
+            <th scope="col">Serial</th>
+            <th scope="col">Producción</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Géneros</th>
+            <th scope="col">Director</th>
+            <th scope="col">Productora</th>
+            <th scope="col">Fechas</th>
+            <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-cuerpo"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
+  </footer>
+
+  <dialog id="dialogo-confirmar" aria-labelledby="dialogo-titulo">
+    <form method="dialog">
+      <h2 id="dialogo-titulo">Confirmar eliminación</h2>
+      <p id="dialogo-texto"></p>
+      <div class="dialogo-botones">
+        <button class="boton boton-secundario" value="no">Cancelar</button>
+        <button class="boton boton-peligro" value="si">Sí, eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/media.js"></script>
+</body>
+</html>

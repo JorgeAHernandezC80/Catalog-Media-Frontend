@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inicio · Catálogo de Media</title>
+  <meta name="description" content="Panel de inicio del catálogo de películas y series.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <div class="cabecera-interior">
+      <p class="marca">Catálogo de Media</p>
+      <nav aria-label="Principal">
+        <ul>
+        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="generos.html">Géneros</a></li>
+        <li><a href="directores.html">Directores</a></li>
+        <li><a href="productoras.html">Productoras</a></li>
+        <li><a href="tipos.html">Tipos</a></li>
+        <li><a href="media.html">Media</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <h1>Catálogo de películas y series</h1>
+    <p class="intro">Administra los cinco módulos del catálogo: géneros, directores, productoras, tipos y las producciones (media).
+      Esta aplicación consume la API REST del proyecto.</p>
+
+    <div id="mensaje"></div>
+
+    <section aria-labelledby="titulo-modulos">
+      <h2 id="titulo-modulos">Módulos</h2>
+      <ul class="tarjetas">
+        <li class="tarjeta">
+          <h3><a href="generos.html">Géneros</a></h3>
+          <p class="tarjeta-numero"><span data-conteo="generos">…</span> <span class="solo-lectores">géneros registrados</span></p>
+          <p>Clasifican las producciones.</p>
+        </li>
+        <li class="tarjeta">
+          <h3><a href="directores.html">Directores</a></h3>
+          <p class="tarjeta-numero"><span data-conteo="directores">…</span> <span class="solo-lectores">directores registrados</span></p>
+          <p>Quién dirige cada producción.</p>
+        </li>
+        <li class="tarjeta">
+          <h3><a href="productoras.html">Productoras</a></h3>
+          <p class="tarjeta-numero"><span data-conteo="productoras">…</span> <span class="solo-lectores">productoras registrados</span></p>
+          <p>Casas productoras.</p>
+        </li>
+        <li class="tarjeta">
+          <h3><a href="tipos.html">Tipos</a></h3>
+          <p class="tarjeta-numero"><span data-conteo="tipos">…</span> <span class="solo-lectores">tipos registrados</span></p>
+          <p>Película, serie y otros.</p>
+        </li>
+        <li class="tarjeta">
+          <h3><a href="media.html">Media</a></h3>
+          <p class="tarjeta-numero"><span data-conteo="media">…</span> <span class="solo-lectores">media registrados</span></p>
+          <p>El catálogo completo.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel" aria-labelledby="titulo-reglas">
+      <h2 id="titulo-reglas">Reglas que verás en pantalla</h2>
+      <ul>
+        <li>Una producción debe tener de 1 a 5 géneros distintos, todos activos.</li>
+        <li>Director, Productora y Géneros deben estar activos para poder asignarlos.</li>
+        <li>El serial y la URL de cada producción son únicos.</li>
+        <li>No se puede eliminar un género, director, productora o tipo que esté en uso por alguna producción.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
+  </footer>
+
+  <dialog id="dialogo-confirmar" aria-labelledby="dialogo-titulo">
+    <form method="dialog">
+      <h2 id="dialogo-titulo">Confirmar eliminación</h2>
+      <p id="dialogo-texto"></p>
+      <div class="dialogo-botones">
+        <button class="boton boton-secundario" value="no">Cancelar</button>
+        <button class="boton boton-peligro" value="si">Sí, eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/inicio.js"></script>
+</body>
+</html>

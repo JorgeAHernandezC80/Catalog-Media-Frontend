@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Productoras · Catálogo de Media</title>
+  <meta name="description" content="Administración de las productoras del catálogo.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <header class="cabecera">
+    <div class="cabecera-interior">
+      <p class="marca">Catálogo de Media</p>
+      <nav aria-label="Principal">
+        <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="generos.html">Géneros</a></li>
+        <li><a href="directores.html">Directores</a></li>
+        <li><a href="productoras.html" aria-current="page">Productoras</a></li>
+        <li><a href="tipos.html">Tipos</a></li>
+        <li><a href="media.html">Media</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <h1>Productoras</h1>
+    <p class="intro">Las casas productoras de cada producción. Solo las activas se pueden asignar.</p>
+
+    <section class="panel" aria-labelledby="titulo-formulario">
+      <h2 id="titulo-formulario">Nueva productora</h2>
+      <form id="formulario">
+        <div class="rejilla">
+        <div class="campo">
+          <label for="nombre">Nombre <span class="obligatorio">(obligatorio)</span></label>
+          <input id="nombre" name="nombre" type="text" required maxlength="120" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="estado">Estado <span class="obligatorio">(obligatorio)</span></label>
+          <select id="estado" name="estado" required>
+            <option value="Activo" selected>Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="eslogan">Eslogan</label>
+          <input id="eslogan" name="eslogan" type="text" maxlength="160" autocomplete="off">
+        </div>
+        <div class="campo campo-ancho">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" rows="3" ></textarea>
+        </div>
+        </div>
+        <div class="botones">
+          <button id="btn-guardar" class="boton boton-primario" type="submit">Crear</button>
+          <button id="btn-cancelar" class="boton boton-secundario" type="button" hidden>Cancelar edición</button>
+        </div>
+      </form>
+    </section>
+
+    <div id="mensaje"></div>
+
+    <section class="panel" aria-labelledby="titulo-listado">
+      <div class="listado-cabecera">
+        <h2 id="titulo-listado">Productoras</h2>
+        <p id="contador" class="contador" aria-live="polite"></p>
+      </div>
+      <p id="estado-carga">Cargando…</p>
+      <div class="tabla-contenedor">
+        <table id="tabla" hidden>
+          <caption class="solo-lectores">Productoras registrados</caption>
+          <thead>
+            <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Eslogan</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Creado</th>
+            <th scope="col">Actualizado</th>
+            <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-cuerpo"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
+  </footer>
+
+  <dialog id="dialogo-confirmar" aria-labelledby="dialogo-titulo">
+    <form method="dialog">
+      <h2 id="dialogo-titulo">Confirmar eliminación</h2>
+      <p id="dialogo-texto"></p>
+      <div class="dialogo-botones">
+        <button class="boton boton-secundario" value="no">Cancelar</button>
+        <button class="boton boton-peligro" value="si">Sí, eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/productoras.js"></script>
+</body>
+</html>
