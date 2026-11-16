@@ -50,7 +50,7 @@ body {
   flex-direction: column;
 }
 
-/* ---------- Accesibilidad ---------- */
+/* Accesibilidad */
 
 .solo-lectores {
   position: absolute;
@@ -78,7 +78,7 @@ body {
 
 [hidden] { display: none !important; }
 
-/* ---------- Cabecera y navegación ---------- */
+/* Cabecera y navegación */
 
 .cabecera { background: var(--cabecera); color: #fff; }
 
@@ -114,7 +114,7 @@ body {
 .cabecera nav a[aria-current="page"] { background: #fff; color: var(--cabecera); font-weight: 600; }
 .cabecera :focus-visible { outline-color: #fff; }
 
-/* ---------- Contenido ---------- */
+/* Contenido */
 
 main {
   flex: 1;
@@ -141,7 +141,7 @@ a { color: var(--primario); }
   margin-bottom: 1.5rem;
 }
 
-/* ---------- Formularios ---------- */
+/* Formularios */
 
 .rejilla {
   display: grid;
@@ -220,7 +220,7 @@ fieldset.grupo-generos {
   .boton-primario { color: #10142a; }
 }
 
-/* ---------- Mensajes ---------- */
+/* Mensajes */
 
 .mensaje {
   border-radius: var(--radio);
@@ -233,7 +233,7 @@ fieldset.grupo-generos {
 .mensaje-exito { background: var(--exito-fondo); border-color: var(--exito); color: var(--exito); }
 .mensaje-error { background: var(--peligro-fondo); border-color: var(--peligro); color: var(--peligro); }
 
-/* ---------- Listado ---------- */
+/* Listado */
 
 .listado-cabecera { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
 
@@ -301,7 +301,7 @@ small { color: var(--texto-suave); }
   td.acciones { padding-top: 0.6rem; }
 }
 
-/* ---------- Inicio ---------- */
+/* Inicio */
 
 .tarjetas {
   list-style: none;
@@ -321,7 +321,7 @@ small { color: var(--texto-suave); }
 .tarjeta p { margin: 0.2rem 0 0; color: var(--texto-suave); font-size: 0.92rem; }
 .tarjeta .tarjeta-numero { font-size: 2rem; font-weight: 700; color: var(--texto); line-height: 1.2; }
 
-/* ---------- Diálogo y pie ---------- */
+/* Diálogo y pie */
 
 dialog {
   background: var(--superficie);

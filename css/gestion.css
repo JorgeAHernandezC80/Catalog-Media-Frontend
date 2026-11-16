@@ -1,0 +1,202 @@
+/* Tema de las pantallas de gestión (Géneros, Directores, Productoras, Tipos y Media).
+   Se carga después de estilos.css y solo cambia la apariencia para que coincida
+   con la cartelera: azul noche, marfil, serif en los títulos y dorado solo en el
+   botón principal de cada pantalla. La estructura y el JavaScript no cambian.
+   Casi todo se logra cambiando las variables de color que ya usa estilos.css. */
+
+.gestion {
+  --fondo: #090c13;
+  --superficie: #111621;
+  --campo: #0c1018;
+  --texto: #ece6da;
+  --texto-suave: #9a948a;
+  --borde: rgb(236 230 218 / 0.14);
+  --borde-fuerte: rgb(236 230 218 / 0.32);
+  --primario: #c9a24f;
+  --primario-oscuro: #dcbb72;
+  --peligro: #ef9a9a;
+  --peligro-fondo: #2a1418;
+  --exito: #93d4ab;
+  --exito-fondo: #10241a;
+  --cabecera: #090c13;
+  --radio: 3px;
+  --sombra: none;
+
+  --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --sans: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+
+  font-family: var(--sans);
+  color-scheme: dark;
+  background:
+    radial-gradient(ellipse at 85% -10%, rgb(40 62 115 / 0.35), transparent 45%),
+    var(--fondo);
+}
+
+.gestion :focus-visible { outline-color: var(--texto); }
+.gestion a { color: var(--texto); }
+
+.gestion .saltar { background: var(--primario); color: #14110a; }
+
+/* ---------- Cabecera ---------- */
+
+.gestion .cabecera { background: transparent; border-bottom: 1px solid var(--borde); }
+.gestion .cabecera-interior { max-width: 1240px; padding: 1.1rem 2rem; }
+
+.gestion .marca {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  color: var(--texto);
+  text-decoration: none;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.45rem;
+}
+.gestion .marca-icono { width: 1.9rem; height: 1.9rem; }
+
+.gestion .cabecera nav ul { gap: 0.25rem 1.75rem; }
+.gestion .cabecera nav a {
+  color: #c9c2b6;
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+}
+.gestion .cabecera nav a:hover { background: none; color: var(--texto); }
+.gestion .cabecera nav a[aria-current="page"] {
+  background: none;
+  color: var(--texto);
+  font-weight: 500;
+  border-bottom-color: var(--texto);
+}
+
+/* ---------- Contenido ---------- */
+
+.gestion main { max-width: 1240px; padding: 2.75rem 2rem 3.5rem; }
+
+.gestion h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  margin-bottom: 0.5rem;
+}
+.gestion h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+.gestion .intro { color: var(--texto-suave); margin-bottom: 2.25rem; }
+
+.gestion .panel {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+/* ---------- Formularios ---------- */
+
+.gestion label,
+.gestion legend { font-weight: 500; font-size: 0.92rem; color: #d6cfc3; }
+.gestion .obligatorio { color: var(--texto-suave); }
+
+.gestion input,
+.gestion select,
+.gestion textarea {
+  background: var(--campo);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 0.65rem 0.8rem;
+}
+.gestion input:hover,
+.gestion select:hover,
+.gestion textarea:hover { border-color: var(--borde-fuerte); }
+.gestion input:focus,
+.gestion select:focus,
+.gestion textarea:focus { border-color: var(--texto); }
+.gestion input::placeholder,
+.gestion textarea::placeholder { color: #625d55; }
+
+.gestion fieldset.grupo-generos { border-color: var(--borde); border-radius: var(--radio); }
+.gestion .opcion-genero input { accent-color: var(--primario); }
+
+/* ---------- Botones ---------- */
+
+.gestion .boton { border-radius: 2px; font-weight: 500; padding: 0.65rem 1.2rem; }
+
+/* El botón principal (Crear / Guardar cambios) es el único dorado de la pantalla. */
+.gestion .boton-primario { background: var(--primario); color: #14110a; }
+.gestion .boton-primario:hover:not(:disabled) { background: var(--primario-oscuro); }
+
+.gestion .boton-secundario { color: var(--texto); border-color: var(--borde-fuerte); }
+.gestion .boton-secundario:hover { background: rgb(236 230 218 / 0.06); }
+
+.gestion .boton-peligro { color: var(--peligro); border-color: rgb(239 154 154 / 0.55); }
+.gestion .boton-peligro:hover { background: var(--peligro-fondo); }
+
+/* ---------- Mensajes ---------- */
+
+.gestion .mensaje { border-radius: var(--radio); }
+
+/* ---------- Listado ---------- */
+
+.gestion .filtro label { color: var(--texto-suave); font-weight: 400; }
+
+.gestion th {
+  color: var(--texto-suave);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+.gestion th,
+.gestion td { border-bottom-color: var(--borde); }
+.gestion tbody tr:hover { background: rgb(236 230 218 / 0.035); }
+
+.gestion .insignia { border-radius: 999px; font-weight: 500; }
+.gestion .insignia-activo { background: transparent; }
+
+.gestion .chip {
+  background: transparent;
+  border: 1px solid var(--borde);
+  color: #d6cfc3;
+}
+
+.gestion .titulo-media img {
+  border: 0;
+  border-radius: 2px;
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
+}
+.gestion .titulo-media strong { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+
+@media (max-width: 720px) {
+  .gestion main { padding: 2rem 1.25rem 2.5rem; }
+  .gestion .cabecera-interior { padding: 1rem 1.25rem; }
+  .gestion .panel { padding: 1.25rem; }
+  .gestion tr { border-color: var(--borde); border-radius: var(--radio); }
+}
+
+/* ---------- Diálogo y pie ---------- */
+
+.gestion dialog {
+  background: var(--superficie);
+  border-color: var(--borde);
+  border-radius: 4px;
+  box-shadow: 0 40px 100px rgb(0 0 0 / 0.7);
+}
+.gestion dialog::backdrop { background: rgb(4 6 10 / 0.8); }
+.gestion dialog h2 { font-size: 1.6rem; }
+
+.gestion .pie {
+  border-top-color: var(--borde);
+  color: var(--texto-suave);
+  padding: 1.5rem 1.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
