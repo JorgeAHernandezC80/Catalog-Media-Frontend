@@ -1,12 +1,11 @@
-/* Cartelera — experiencia de sala de cine premium.
-   Todo vive dentro de .cartelera para no contaminar las pantallas de administración. */
+/* Cartelera — experiencia de sala de cine premium + lenguaje de cinta de película */
 
 .cartelera {
-  --sala: #120e14;
-  --sala-elevada: #1a141f;
-  --telon: #231a28;
-  --telon-claro: #2e2436;
-  --telon-profundo: #1c1522;
+  --sala: #0f0c12;
+  --sala-elevada: #17131c;
+  --telon: #221a29;
+  --telon-claro: #2d2438;
+  --telon-profundo: #18131f;
   --terciopelo: #b3263a;
   --terciopelo-oscuro: #8a1c2c;
   --terciopelo-brillo: #d43a52;
@@ -18,6 +17,8 @@
   --penumbra-suave: #7d6e7b;
   --linea: #3a2f42;
   --linea-suave: #2a2230;
+  --cinta: #1e1824;          /* tono para el efecto celuloide */
+  --perforacion: #0a080c;
 
   --letrero: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
   --texto-base: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -39,7 +40,6 @@
 .cartelera .cabecera {
   background: linear-gradient(180deg, var(--sala-elevada) 0%, var(--sala) 100%);
   border-bottom: 1px solid var(--linea-suave);
-  backdrop-filter: blur(8px);
 }
 
 .cartelera .marca {
@@ -48,7 +48,7 @@
   font-size: 1.55rem;
   letter-spacing: 0.04em;
   color: var(--marquesina);
-  text-shadow: 0 0 24px rgb(242 193 78 / 0.25);
+  text-shadow: 0 0 28px rgb(242 193 78 / 0.28);
 }
 
 .cartelera .cabecera nav a {
@@ -58,20 +58,17 @@
 
 .cartelera .cabecera nav a:hover {
   color: var(--pantalla);
-  background: rgb(46 36 54 / 0.6);
+  background: rgb(45 36 56 / 0.55);
 }
 
 .cartelera .cabecera nav a[aria-current="page"] {
   background: var(--terciopelo);
   color: #fff;
-  box-shadow: 0 0 20px rgb(179 38 58 / 0.35);
+  box-shadow: 0 0 22px rgb(179 38 58 / 0.4);
 }
 
-/* ——— Layout principal ——— */
-.cartelera main {
-  max-width: none;
-  padding: 0;
-}
+/* ——— Layout ——— */
+.cartelera main { max-width: none; padding: 0; }
 
 .cartelera .contenedor {
   max-width: 1180px;
@@ -86,7 +83,7 @@
   justify-content: center;
   text-decoration: none;
   padding: 0.72rem 1.45rem;
-  border-radius: 5px;
+  border-radius: 4px;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -97,13 +94,13 @@
   background: linear-gradient(180deg, var(--terciopelo-brillo) 0%, var(--terciopelo) 100%);
   color: #fff;
   border: 1px solid transparent;
-  box-shadow: 0 4px 16px rgb(179 38 58 / 0.35);
+  box-shadow: 0 4px 18px rgb(179 38 58 / 0.38);
 }
 
 .cartelera .boton-terciopelo:hover {
   background: linear-gradient(180deg, #e0455e 0%, var(--terciopelo-oscuro) 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgb(179 38 58 / 0.45);
+  box-shadow: 0 7px 24px rgb(179 38 58 / 0.5);
 }
 
 .cartelera .boton-contorno {
@@ -128,12 +125,28 @@
   cursor: pointer;
 }
 
-/* ——— Destacada ——— */
+/* ——— Destacada (con luz de proyector + sensación de cinta) ——— */
 .destacada {
   position: relative;
   overflow: hidden;
   isolation: isolate;
   background: var(--telon-profundo);
+}
+
+/* Luz radial tipo proyector detrás de la portada */
+.destacada::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 15%;
+  width: 70%;
+  height: 140%;
+  background: radial-gradient(ellipse at center,
+    rgb(242 193 78 / 0.09) 0%,
+    rgb(242 193 78 / 0.03) 35%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .destacada-fondo {
@@ -146,9 +159,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(42px) saturate(1.25) brightness(0.7);
-  transform: scale(1.18);
-  opacity: 0.5;
+  filter: blur(44px) saturate(1.3) brightness(0.65);
+  transform: scale(1.2);
+  opacity: 0.48;
 }
 
 .destacada-fondo::after {
@@ -156,31 +169,37 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(105deg,
+    linear-gradient(108deg,
       var(--sala) 0%,
-      rgb(18 14 20 / 0.92) 38%,
-      rgb(18 14 20 / 0.65) 68%,
-      rgb(18 14 20 / 0.35) 100%);
+      rgb(15 12 18 / 0.94) 36%,
+      rgb(15 12 18 / 0.7) 62%,
+      rgb(15 12 18 / 0.3) 100%);
 }
 
 .destacada-interior {
+  position: relative;
+  z-index: 1;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 3.25rem 1.5rem 3.5rem;
+  padding: 3.4rem 1.5rem 3.6rem;
   display: grid;
   grid-template-columns: minmax(200px, 270px) 1fr;
-  gap: 2.75rem;
+  gap: 2.8rem;
   align-items: center;
 }
 
 .destacada-portada {
   aspect-ratio: 2 / 3;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
-  box-shadow:
-    0 28px 64px rgb(0 0 0 / 0.65),
-    0 0 0 1px rgb(255 255 255 / 0.06);
   background: var(--telon-claro);
+  box-shadow:
+    0 32px 70px rgb(0 0 0 / 0.7),
+    0 0 0 1px rgb(255 255 255 / 0.07),
+    0 0 40px rgb(242 193 78 / 0.08);
+  /* efecto sutil de marco de celuloide */
+  outline: 1px solid rgb(255 255 255 / 0.04);
+  outline-offset: 4px;
 }
 
 .destacada-portada img {
@@ -190,28 +209,26 @@
   display: block;
 }
 
-.destacada-texto {
-  max-width: 58ch;
-}
+.destacada-texto { max-width: 58ch; }
 
 .destacada-etiqueta {
   margin: 0 0 0.5rem;
   color: var(--marquesina);
   font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.06em;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .destacada h1 {
   font-family: var(--letrero);
   font-weight: 800;
-  font-size: clamp(2.6rem, 6.5vw, 5.1rem);
+  font-size: clamp(2.55rem, 6.4vw, 5rem);
   line-height: 0.92;
   letter-spacing: 0.015em;
-  margin: 0 0 1.1rem;
+  margin: 0 0 1.15rem;
   text-wrap: balance;
-  text-shadow: 0 2px 24px rgb(0 0 0 / 0.4);
+  text-shadow: 0 2px 28px rgb(0 0 0 / 0.5);
 }
 
 .destacada-datos {
@@ -231,7 +248,7 @@
 }
 
 .destacada-creditos {
-  margin: 0 0 1.75rem;
+  margin: 0 0 1.8rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem 1.6rem;
@@ -250,20 +267,15 @@
   gap: 0.8rem;
 }
 
-.destacada-sin-pelicula .destacada-interior {
-  grid-template-columns: 1fr;
-}
-
-.destacada-sin-pelicula .destacada-portada {
-  display: none;
-}
+.destacada-sin-pelicula .destacada-interior { grid-template-columns: 1fr; }
+.destacada-sin-pelicula .destacada-portada { display: none; }
 
 /* ——— Bombillas de marquesina ——— */
 .bombillas {
   position: relative;
   height: 16px;
   background:
-    radial-gradient(circle, rgb(242 193 78 / 0.18) 3.5px, transparent 4.5px)
+    radial-gradient(circle, rgb(242 193 78 / 0.16) 3.5px, transparent 4.5px)
     0 50% / 24px 16px repeat-x;
 }
 
@@ -275,15 +287,13 @@
     radial-gradient(circle,
       var(--marquesina-luz) 0 1.6px,
       var(--marquesina) 2.4px 3.6px,
-      rgb(242 193 78 / 0.4) 5.5px,
+      rgb(242 193 78 / 0.38) 5.5px,
       transparent 7.5px)
     0 50% / 24px 16px repeat-x;
   animation: encender 1.7s steps(28, end) 0.15s both;
 }
 
-.bombillas-abajo::after {
-  animation-delay: 0.45s;
-}
+.bombillas-abajo::after { animation-delay: 0.45s; }
 
 @keyframes encender {
   from { clip-path: inset(0 100% 0 0); }
@@ -291,8 +301,7 @@
 }
 
 /* ——— Datos y géneros ——— */
-.datos,
-.funcion-datos {
+.datos, .funcion-datos {
   margin: 0;
   display: flex;
   flex-wrap: wrap;
@@ -325,14 +334,14 @@
 }
 
 .generos li {
-  background: rgb(246 239 230 / 0.09);
+  background: rgb(246 239 230 / 0.08);
   border-radius: 999px;
   padding: 0.15rem 0.75rem;
   font-size: 0.82rem;
   color: var(--penumbra);
 }
 
-/* ——— Cabecera de cartelera + herramientas ——— */
+/* ——— Cabecera + herramientas ——— */
 .cartelera-cabecera {
   display: flex;
   flex-wrap: wrap;
@@ -345,7 +354,7 @@
 .cartelera h2 {
   font-family: var(--letrero);
   font-weight: 800;
-  font-size: 2.35rem;
+  font-size: 2.3rem;
   line-height: 1;
   margin: 0;
   letter-spacing: 0.01em;
@@ -385,20 +394,14 @@
   background: var(--telon);
   color: var(--pantalla);
   border: 1px solid var(--linea);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 0.7rem 0.95rem;
   font-size: 0.98rem;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.cartelera .buscador input::placeholder {
-  color: var(--penumbra-suave);
-}
-
-.cartelera .buscador input:hover {
-  border-color: var(--penumbra-suave);
-}
-
+.cartelera .buscador input::placeholder { color: var(--penumbra-suave); }
+.cartelera .buscador input:hover { border-color: var(--penumbra-suave); }
 .cartelera .buscador input:focus {
   border-color: var(--marquesina);
   background: var(--telon-claro);
@@ -435,9 +438,7 @@
   font-weight: 600;
 }
 
-.filtro-generos {
-  margin-bottom: 2rem;
-}
+.filtro-generos { margin-bottom: 2rem; }
 
 @media (max-width: 720px) {
   .filtro-generos {
@@ -446,9 +447,7 @@
     padding-bottom: 0.5rem;
     scrollbar-width: thin;
   }
-  .filtro-opcion {
-    white-space: nowrap;
-  }
+  .filtro-opcion { white-space: nowrap; }
 }
 
 .cartelera-estado {
@@ -457,14 +456,14 @@
   font-size: 0.98rem;
 }
 
-/* ——— Grilla de pósters ——— */
+/* ——— Grilla de pósters (con detalle de cinta) ——— */
 .funciones {
   list-style: none;
   margin: 0 0 3.5rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: 2.1rem 1.35rem;
+  gap: 2.15rem 1.4rem;
 }
 
 .funcion {
@@ -484,14 +483,37 @@
 .funcion-portada {
   display: block;
   aspect-ratio: 2 / 3;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
   background: var(--telon);
-  box-shadow: 0 8px 28px rgb(0 0 0 / 0.35);
+  box-shadow: 0 10px 32px rgb(0 0 0 / 0.4);
   outline: 2px solid transparent;
   outline-offset: 3px;
   transition: outline-color 0.18s ease, transform 0.22s ease, box-shadow 0.22s ease;
+  /* pequeño detalle de celuloide en los laterales */
+  position: relative;
 }
+
+.funcion-portada::before,
+.funcion-portada::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 7px,
+      var(--perforacion) 7px 11px
+    );
+  opacity: 0.55;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.funcion-portada::before { left: 0; }
+.funcion-portada::after  { right: 0; }
 
 .funcion-portada img {
   width: 100%;
@@ -504,17 +526,15 @@
 .funcion:hover .funcion-portada,
 .funcion:focus-visible .funcion-portada {
   outline-color: var(--marquesina);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 0.55);
 }
 
 .funcion:hover .funcion-portada img {
-  transform: scale(1.04);
+  transform: scale(1.045);
 }
 
-.cartelera .funcion:focus-visible {
-  outline: none;
-}
+.cartelera .funcion:focus-visible { outline: none; }
 
 .funcion-titulo {
   font-weight: 700;
@@ -523,7 +543,7 @@
   letter-spacing: 0.005em;
 }
 
-/* Póster vacío */
+/* Póster vacío con textura de cinta */
 .poster-vacio {
   width: 100%;
   height: 100%;
@@ -532,31 +552,29 @@
   padding: 1.1rem;
   text-align: center;
   background:
-    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.25) 0 5px, transparent 5px 20px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.28) 0 5px, transparent 5px 19px),
     linear-gradient(165deg, var(--terciopelo) 0%, var(--terciopelo-oscuro) 100%);
 }
 
 .poster-vacio span {
   font-family: var(--letrero);
   font-weight: 800;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   line-height: 1.05;
   color: var(--pantalla);
   text-wrap: balance;
-  text-shadow: 0 1px 8px rgb(0 0 0 / 0.4);
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.45);
 }
 
-/* ——— Administrar (integrado a la metáfora) ——— */
+/* ——— Administrar ——— */
 .administrar {
   border-top: 1px solid var(--linea-suave);
   padding-top: 2.5rem;
-  margin-top: 0.5rem;
 }
 
 .cartelera .administrar h2 {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   margin-bottom: 1.15rem;
-  color: var(--pantalla);
 }
 
 .administrar-lista {
@@ -576,7 +594,7 @@
   color: var(--pantalla);
   background: var(--telon);
   border: 1px solid var(--linea);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 0.6rem 1rem;
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
 }
@@ -599,7 +617,7 @@
   background: #2e1218;
   border: 1px solid #e07a7a;
   color: #ffc9c9;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .cartelera .pie {
@@ -608,22 +626,22 @@
   font-size: 0.9rem;
 }
 
-/* ——— Ficha de detalle (dialog) ——— */
+/* ——— Dialog de detalle ——— */
 .cartelera dialog.detalle {
   background: var(--telon);
   color: var(--pantalla);
   border: 1px solid var(--linea);
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 0;
   width: min(880px, calc(100vw - 2rem));
   max-width: none;
   max-height: calc(100vh - 2rem);
-  box-shadow: 0 32px 80px rgb(0 0 0 / 0.7);
+  box-shadow: 0 36px 90px rgb(0 0 0 / 0.75);
 }
 
 .cartelera dialog.detalle::backdrop {
-  background: rgb(8 5 10 / 0.82);
-  backdrop-filter: blur(4px);
+  background: rgb(6 4 9 / 0.85);
+  backdrop-filter: blur(5px);
 }
 
 .detalle[open] {
@@ -631,14 +649,8 @@
 }
 
 @keyframes abrir-ficha {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
 }
 
 .detalle-interior {
@@ -666,7 +678,7 @@
 }
 
 .cartelera .detalle h2 {
-  font-size: 2.4rem;
+  font-size: 2.35rem;
   margin: 0;
   text-wrap: balance;
   line-height: 1.05;
@@ -693,14 +705,8 @@
   font-size: 0.95rem;
 }
 
-.detalle-ficha dt {
-  color: var(--penumbra);
-}
-
-.detalle-ficha dd {
-  margin: 0;
-  font-weight: 600;
-}
+.detalle-ficha dt { color: var(--penumbra); }
+.detalle-ficha dd { margin: 0; font-weight: 600; }
 
 .detalle-acciones {
   display: flex;
@@ -710,9 +716,7 @@
   padding-top: 0.6rem;
 }
 
-.detalle-acciones form {
-  margin: 0;
-}
+.detalle-acciones form { margin: 0; }
 
 /* ——— Responsive ——— */
 @media (max-width: 720px) {
@@ -722,12 +726,10 @@
     padding: 2.25rem 1.25rem 2.5rem;
   }
 
-  .destacada-portada {
-    width: min(210px, 58vw);
-  }
+  .destacada-portada { width: min(210px, 58vw); }
 
   .destacada-fondo::after {
-    background: linear-gradient(180deg, rgb(18 14 20 / 0.55) 0%, var(--sala) 72%);
+    background: linear-gradient(180deg, rgb(15 12 18 / 0.55) 0%, var(--sala) 72%);
   }
 
   .funciones {
@@ -735,33 +737,25 @@
     gap: 1.6rem 1rem;
   }
 
-  .detalle-interior {
-    grid-template-columns: 1fr;
-  }
+  .detalle-interior { grid-template-columns: 1fr; }
 
   .detalle-portada {
     width: 52%;
     margin: 1.6rem auto 0;
-    border-radius: 4px;
+    border-radius: 3px;
     overflow: hidden;
   }
 
-  .cartelera .detalle h2 {
-    font-size: 1.9rem;
-  }
+  .cartelera .detalle h2 { font-size: 1.9rem; }
 }
 
-/* ——— Preferencia de movimiento reducido ——— */
+/* ——— Reduced motion ——— */
 @media (prefers-reduced-motion: reduce) {
   .bombillas::after,
-  .detalle[open] {
-    animation: none;
-  }
+  .detalle[open] { animation: none; }
 
   .funcion-portada,
   .funcion-portada img,
   .boton,
-  .administrar-lista a {
-    transition: none;
-  }
+  .administrar-lista a { transition: none; }
 }
