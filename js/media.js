@@ -1,11 +1,10 @@
 // Pantalla de Media (películas y series). Es la más completa: tiene listas
-// desplegables para Director y Tipo, y dos selectores de casillas: de 1 a 5 productoras y de 1 a 5 géneros.
+// desplegable para Tipo, y tres selectores de casillas: de 1 a 5 directores, productoras y géneros.
 import { iniciarCrud } from './crud.js';
 import { listar } from './api.js';
-import { MAX_GENEROS, MAX_PRODUCTORAS } from './config.js';
+import { MAX_DIRECTORES, MAX_GENEROS, MAX_PRODUCTORAS } from './config.js';
 import { el, formatearFecha } from './ui.js';
 
-const selectDirector = document.querySelector('#director');
 const selectTipo = document.querySelector('#tipo');
 const filtroGenero = document.querySelector('#filtro-genero');
 
@@ -93,6 +92,14 @@ const selectorGeneros = crearSelectorMultiple({
   etiquetaDe: (g) => g.nombre
 });
 
+const selectorDirectores = crearSelectorMultiple({
+  campo: 'directores',
+  maximo: MAX_DIRECTORES,
+  mensajeMinimo: 'Elige al menos un director.',
+  vacio: 'No hay directores activos. Crea uno primero en la sección Directores.',
+  etiquetaDe: (d) => d.nombres
+});
+
 const selectorProductoras = crearSelectorMultiple({
   campo: 'productoras',
   maximo: MAX_PRODUCTORAS,
@@ -109,8 +116,8 @@ async function cargarApoyo() {
   ]);
   catalogo = { generos, directores, productoras, tipos };
 
-  pintarSelect(selectDirector, directores, (d) => d.nombres);
   pintarSelect(selectTipo, tipos, (t) => t.nombre);
+  selectorDirectores.pintar(directores);
   selectorProductoras.pintar(productoras);
   selectorGeneros.pintar(generos);
 
@@ -136,7 +143,7 @@ function leerFormulario(form) {
     anoEstreno: Number(dato('anoEstreno')),
     // El backend espera una LISTA de IDs en "generos", no un solo valor.
     generos: selectorGeneros.marcados(),
-    director: selectDirector.value,
+    directores: selectorDirectores.marcados(),
     // Igual que géneros: el backend espera una LISTA de IDs en "productoras".
     productoras: selectorProductoras.marcados(),
     tipo: selectTipo.value
@@ -151,8 +158,8 @@ function llenarFormulario(form, media) {
   for (const campo of ['serial', 'titulo', 'sinopsis', 'url', 'portada', 'anoEstreno']) {
     form.elements[campo].value = media[campo] ?? '';
   }
-  pintarSelect(selectDirector, catalogo.directores, (d) => d.nombres, idDe(media.director));
   pintarSelect(selectTipo, catalogo.tipos, (t) => t.nombre, idDe(media.tipo));
+  selectorDirectores.pintar(catalogo.directores, (media.directores ?? []).map(idDe));
   selectorProductoras.pintar(catalogo.productoras, (media.productoras ?? []).map(idDe));
   selectorGeneros.pintar(catalogo.generos, (media.generos ?? []).map(idDe));
 }
@@ -160,8 +167,8 @@ function llenarFormulario(form, media) {
 // Al volver al modo "crear" se repintan las listas sin selección previa.
 function reiniciarFormulario() {
   if (!catalogo.generos.length && !catalogo.directores.length) return;
-  pintarSelect(selectDirector, catalogo.directores, (d) => d.nombres);
   pintarSelect(selectTipo, catalogo.tipos, (t) => t.nombre);
+  selectorDirectores.pintar(catalogo.directores);
   selectorProductoras.pintar(catalogo.productoras);
   selectorGeneros.pintar(catalogo.generos);
 }
@@ -173,6 +180,13 @@ const chipsGeneros = (media) =>
     'ul',
     { class: 'chips', 'aria-label': 'Géneros' },
     (media.generos ?? []).map((g) => el('li', { class: 'chip' }, g.nombre ?? '(sin nombre)'))
+  );
+
+const chipsDirectores = (media) =>
+  el(
+    'ul',
+    { class: 'chips', 'aria-label': 'Director' },
+    (media.directores ?? []).map((d) => el('li', { class: 'chip' }, d.nombres ?? '(sin nombre)'))
   );
 
 const chipsProductoras = (media) =>
@@ -219,7 +233,7 @@ const crud = iniciarCrud({
     { titulo: 'Producción', celda: celdaTitulo },
     { titulo: 'Tipo', celda: (m) => m.tipo?.nombre ?? '—' },
     { titulo: 'Géneros', celda: chipsGeneros },
-    { titulo: 'Director', celda: (m) => m.director?.nombres ?? '—' },
+    { titulo: 'Director', celda: chipsDirectores },
     { titulo: 'Productora', celda: chipsProductoras },
     {
       titulo: 'Fechas',

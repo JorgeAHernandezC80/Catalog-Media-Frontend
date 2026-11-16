@@ -75,11 +75,19 @@ function poster(media, { perezoso = true } = {}) {
   });
 }
 
+// Une una lista de nombres: ["A"] -> "A", ["A","B"] -> "A y B", ["A","B","C"] -> "A, B y C".
+function unirNombres(nombres) {
+  const lista = nombres.filter(Boolean);
+  if (lista.length <= 1) return lista[0] ?? '';
+  return `${lista.slice(0, -1).join(', ')} y ${lista[lista.length - 1]}`;
+}
+
 // "Una película de Ti West • 2026 • Drama", como en los créditos de un cartel.
 function lineaCreditos(media) {
   const partes = [];
   const tipo = media.tipo?.nombre;
-  const director = media.director?.nombres;
+  // Varios directores se unen con comas y una «y» al final: "A, B y C".
+  const director = unirNombres((media.directores ?? []).map((d) => d.nombres));
   if (director) {
     if (tipo) {
       // "Una película", "Una serie", "Un documental"...
@@ -159,10 +167,11 @@ function pintarClaqueta(media) {
     const limpio = String(texto ?? '—');
     return limpio.length > maximo ? `${limpio.slice(0, maximo - 1)}…` : limpio;
   };
-  $('#claqueta-produccion').textContent = recortar(media.titulo, 20);
-  $('#claqueta-director').textContent = recortar(media.director?.nombres, 20);
+  $('#claqueta-produccion').textContent = recortar(media.titulo, 15);
+  // En la claqueta cabe un solo nombre: se muestra el primer director.
+  $('#claqueta-director').textContent = recortar(media.directores?.[0]?.nombres, 15);
   // La claqueta tiene un solo renglón: se muestra la primera productora.
-  $('#claqueta-productora').textContent = recortar(media.productoras?.[0]?.nombre, 20);
+  $('#claqueta-productora').textContent = recortar(media.productoras?.[0]?.nombre, 15);
   $('#claqueta-anio').textContent = recortar(media.anoEstreno, 6);
 }
 
@@ -289,7 +298,7 @@ function abrirDetalle(media) {
   $('#detalle-portada').replaceChildren(poster(media, { perezoso: false }));
 
   const filas = [
-    ['Director', media.director?.nombres],
+    ['Director', unirNombres((media.directores ?? []).map((d) => d.nombres))],
     ['Productora', (media.productoras ?? []).map((p) => p.nombre).filter(Boolean).join(', ')],
     ['Serial', media.serial]
   ].filter(([, valor]) => valor);

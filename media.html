@@ -61,10 +61,6 @@
           <select id="tipo" name="tipo" required></select>
         </div>
         <div class="campo">
-          <label for="director">Director <span class="obligatorio">(obligatorio)</span></label>
-          <select id="director" name="director" required></select>
-        </div>
-        <div class="campo">
           <label for="url">URL de la producción <span class="obligatorio">(obligatorio)</span></label>
           <input id="url" name="url" type="url" required aria-describedby="url-ayuda" placeholder="https://…" autocomplete="off">
           <p class="ayuda" id="url-ayuda">Enlace único (http o https). No se puede repetir.</p>
@@ -77,6 +73,12 @@
           <label for="sinopsis">Sinopsis <span class="obligatorio">(obligatorio)</span></label>
           <textarea id="sinopsis" name="sinopsis" rows="4" required ></textarea>
         </div>
+        <fieldset class="campo campo-ancho grupo-generos">
+          <legend>Director <span class="obligatorio">(obligatorio)</span></legend>
+          <p class="ayuda" id="directores-ayuda">Marca el director. Si la dirigieron varios, marca todos (hasta 5). Solo aparecen los activos.</p>
+          <div id="lista-directores" class="lista-generos" aria-describedby="directores-ayuda"></div>
+          <p id="contador-directores" class="contador" aria-live="polite"></p>
+        </fieldset>
         <fieldset class="campo campo-ancho grupo-generos">
           <legend>Productora <span class="obligatorio">(obligatorio)</span></legend>
           <p class="ayuda" id="productoras-ayuda">Marca la productora. Si la hicieron varias, marca todas (hasta 5). Solo aparecen las activas.</p>
@@ -131,8 +133,8 @@
   </main>
 
   <footer class="pie">
-    <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
-    <p>© 2026 Jorge A. Hernández C. Todos los derechos reservados.</p>
+    <p>Proyecto Integrado II · IU Digital de Antioquia</p>
+    <p><small>© 2026 Jorge A. Hernández C. Todos los derechos reservados.</small></p>
   </footer>
 
   <dialog id="dialogo-confirmar" aria-labelledby="dialogo-titulo">
