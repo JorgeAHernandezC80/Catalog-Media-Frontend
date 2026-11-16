@@ -1,5 +1,6 @@
 // Página de inicio en forma de cartelera de cine.
-// - Arriba muestra la última producción agregada como "destacada".
+// - Arriba, en el "escenario", muestra la última producción agregada como destacada,
+//   con su póster y una cinta de película con los pósters del catálogo.
 // - Abajo muestra todas las producciones como pósters, con búsqueda por título
 //   y filtros por tipo y por género.
 // - Al hacer clic en un póster se abre una ficha con el detalle.
@@ -8,7 +9,7 @@
 import { listar } from './api.js';
 import { el, mostrarError } from './ui.js';
 
-// 1. Estado de la página (qué producciones hay y qué filtros están activos).
+// ---------- Estado de la página ----------
 
 const estado = {
   producciones: [],
@@ -19,10 +20,31 @@ const estado = {
 
 const $ = (selector) => document.querySelector(selector);
 
-// 2. Utilidades
+// Iconos pequeños que se repiten (son fijos, no vienen de la API).
+const NS = 'http://www.w3.org/2000/svg';
+function icono(ruta, ancho, alto) {
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${ancho} ${alto}`);
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('d', ruta);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', 'currentColor');
+  path.setAttribute('stroke-width', '1.6');
+  svg.append(path);
+  return svg;
+}
+const iconoPlay = () => {
+  const svg = icono('M1 1l10 6-10 6z', 12, 14);
+  svg.querySelector('path').setAttribute('fill', 'currentColor');
+  return svg;
+};
+const iconoFlecha = () => icono('M1 7h16 M12 2l5 5-5 5', 18, 14);
+
+// ---------- Utilidades ----------
 
 // Solo aceptamos enlaces http/https. El backend ya lo valida, pero si llegara
-// otra cosa (por ejemplo "javascript:..."), no la ponemos en un href.
+// otra cosa (por ejemplo "javascript:..."), no la ponemos en un href ni en un src.
 function urlSegura(valor) {
   try {
     const url = new URL(valor);
@@ -36,8 +58,7 @@ function urlSegura(valor) {
 const normalizar = (texto) =>
   String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-// Póster de reemplazo cuando la producción no tiene portada o la imagen falla:
-// un "telón" con el título escrito.
+// Póster de reemplazo cuando la producción no tiene portada o la imagen falla.
 function posterVacio(titulo) {
   return el('div', { class: 'poster-vacio', 'aria-hidden': 'true' }, el('span', {}, titulo));
 }
@@ -50,79 +71,93 @@ function poster(media, { perezoso = true } = {}) {
     src,
     alt: `Póster de ${media.titulo}`,
     loading: perezoso ? 'lazy' : 'eager',
-    // Si la imagen no carga, se cambia por el póster de reemplazo.
     onerror: (e) => e.target.replaceWith(posterVacio(media.titulo))
   });
 }
 
-// Año y tipo, cada uno en su propia etiqueta.
-function datosBasicos(media, clase) {
-  return el(
-    'p',
-    { class: clase },
-    el('span', { class: 'dato' }, String(media.anoEstreno ?? '—')),
-    media.tipo?.nombre ? el('span', { class: 'dato dato-tipo' }, media.tipo.nombre) : null
-  );
+// "Una película de Ti West • 2026 • Drama", como en los créditos de un cartel.
+function lineaCreditos(media) {
+  const partes = [];
+  const tipo = media.tipo?.nombre;
+  const director = media.director?.nombres;
+  if (director) {
+    if (tipo) {
+      // "Una película", "Una serie", "Un documental"...
+      const articulo = /a$/i.test(tipo) ? 'Una' : 'Un';
+      partes.push(`${articulo} ${tipo.toLowerCase()} de ${director}`);
+    } else {
+      partes.push(`Dirigida por ${director}`);
+    }
+  } else if (tipo) {
+    partes.push(tipo);
+  }
+  if (media.anoEstreno) partes.push(String(media.anoEstreno));
+  const genero = media.generos?.[0]?.nombre;
+  if (genero) partes.push(genero);
+  return partes.join(' • ');
 }
 
-function chipsGeneros(media) {
-  const generos = media.generos ?? [];
-  if (!generos.length) return null;
-  return el('ul', { class: 'generos', 'aria-label': 'Géneros' },
-    generos.map((g) => el('li', {}, g.nombre ?? '(sin nombre)')));
+function listaGeneros(media) {
+  return (media.generos ?? []).map((g) => el('li', {}, g.nombre ?? '(sin nombre)'));
 }
 
-// 3. Película destacada
+// ---------- Escenario (película destacada) ----------
 
 function pintarDestacada(media) {
   const etiqueta = $('#destacada-etiqueta');
   const titulo = $('#destacada-titulo');
-  const datos = $('#destacada-datos');
+  const meta = $('#destacada-meta');
   const sinopsis = $('#destacada-sinopsis');
-  const creditos = $('#destacada-creditos');
   const acciones = $('#destacada-acciones');
   const portada = $('#destacada-portada');
-  const fondo = $('#destacada-fondo');
 
   if (!media) {
     etiqueta.textContent = 'La cartelera está vacía';
     titulo.textContent = 'Catálogo de películas y series';
+    meta.textContent = '';
     sinopsis.textContent = 'Todavía no hay producciones registradas. Agrega la primera desde el módulo Media y aparecerá aquí.';
-    acciones.replaceChildren(el('a', { class: 'boton boton-terciopelo', href: 'media.html' }, 'Agregar una producción'));
-    $('#destacada').classList.add('destacada-sin-pelicula');
+    acciones.replaceChildren(el('a', { class: 'boton-oro', href: 'media.html' }, 'Agregar una producción', iconoFlecha()));
+    portada.hidden = true;
     return;
   }
 
-  $('#destacada').classList.remove('destacada-sin-pelicula');
-  etiqueta.textContent = 'Recién agregada al catálogo';
+  etiqueta.textContent = 'Película destacada';
+  if (media.tipo?.nombre && !/pel[ií]cula/i.test(media.tipo.nombre)) {
+    etiqueta.textContent = `${media.tipo.nombre} destacada`;
+  }
   titulo.textContent = media.titulo;
-  datos.replaceChildren(datosBasicos(media, 'datos'), chipsGeneros(media) ?? '');
+  meta.textContent = lineaCreditos(media);
   sinopsis.textContent = media.sinopsis ?? '';
-
-  const lineas = [];
-  if (media.director?.nombres) lineas.push(el('span', {}, 'Dirigida por ', el('strong', {}, media.director.nombres)));
-  if (media.productora?.nombre) lineas.push(el('span', {}, 'Producida por ', el('strong', {}, media.productora.nombre)));
-  creditos.replaceChildren(...lineas);
 
   const enlace = urlSegura(media.url);
   acciones.replaceChildren(
-    el('button', { type: 'button', class: 'boton boton-terciopelo', onclick: () => abrirDetalle(media) }, 'Ver detalles'),
     enlace
-      ? el('a', { class: 'boton boton-contorno', href: enlace, target: '_blank', rel: 'noopener noreferrer' }, 'Ver producción')
-      : null
+      ? el('a', { class: 'boton-oro', href: enlace, target: '_blank', rel: 'noopener noreferrer' }, 'Ver producción', iconoPlay())
+      : null,
+    el('button', { type: 'button', class: 'boton-texto', onclick: () => abrirDetalle(media) }, 'Ver detalles', iconoFlecha())
   );
 
-  portada.replaceChildren(poster(media, { perezoso: false }));
-
-  // El fondo es la misma portada, difuminada. Se usa un <img> y no CSS
-  // (background-image) para no armar estilos con texto que viene de la API.
-  const src = urlSegura(media.portada);
-  fondo.replaceChildren(src ? el('img', { src, alt: '', onerror: (e) => e.target.remove() }) : '');
+  $('#destacada-imagen').replaceChildren(poster(media, { perezoso: false }));
+  $('#sello-anio').textContent = `Catálogo de Media ${media.anoEstreno ?? ''}`.trim();
+  portada.hidden = false;
 }
 
-// 4. Filtros
+// Cinta de película: repite los pósters del catálogo hasta llenar los cuadros.
+function pintarTira() {
+  const conPortada = estado.producciones.filter((m) => urlSegura(m.portada));
+  const cuadros = [];
+  for (let i = 0; i < 14; i++) {
+    const media = conPortada.length ? conPortada[i % conPortada.length] : null;
+    cuadros.push(
+      el('span', { class: 'cuadro' },
+        media ? el('img', { src: urlSegura(media.portada), alt: '', loading: 'lazy', onerror: (e) => e.target.remove() }) : null)
+    );
+  }
+  $('#tira').replaceChildren(...cuadros);
+}
 
-// Botones de filtro: uno marcado con aria-pressed="true".
+// ---------- Filtros ----------
+
 function botonesFiltro(contenedor, opciones, valorActual, alElegir) {
   contenedor.replaceChildren(
     ...opciones.map(({ valor, texto }) =>
@@ -168,7 +203,7 @@ function pintarFiltros() {
   );
 }
 
-// 5. Cartelera
+// ---------- Cartelera ----------
 
 function filtrar() {
   const texto = normalizar(estado.texto.trim());
@@ -180,6 +215,7 @@ function filtrar() {
 }
 
 function tarjeta(media) {
+  const datos = [media.anoEstreno, media.tipo?.nombre].filter(Boolean).join(' • ');
   return el(
     'li',
     {},
@@ -194,7 +230,7 @@ function tarjeta(media) {
       },
       el('span', { class: 'funcion-portada' }, poster(media)),
       el('span', { class: 'funcion-titulo' }, media.titulo),
-      datosBasicos(media, 'funcion-datos')
+      el('span', { class: 'funcion-datos' }, datos)
     )
   );
 }
@@ -232,12 +268,12 @@ function limpiarFiltros() {
   pintarCartelera();
 }
 
-// 6. Ficha de detalle
+// ---------- Ficha de detalle ----------
 
 function abrirDetalle(media) {
-  const dialogo = $('#detalle');
   $('#detalle-titulo').textContent = media.titulo;
-  $('#detalle-datos').replaceChildren(datosBasicos(media, 'datos'), chipsGeneros(media) ?? '');
+  $('#detalle-meta').textContent = lineaCreditos(media);
+  $('#detalle-generos').replaceChildren(...listaGeneros(media));
   $('#detalle-sinopsis').textContent = media.sinopsis ?? '';
   $('#detalle-portada').replaceChildren(poster(media, { perezoso: false }));
 
@@ -255,7 +291,7 @@ function abrirDetalle(media) {
   enlace.hidden = !url;
   if (url) enlace.href = url;
 
-  dialogo.showModal();
+  $('#detalle').showModal();
 }
 
 // Clic fuera de la ficha (en el fondo oscuro) la cierra, como en los sitios de cine.
@@ -263,12 +299,19 @@ $('#detalle').addEventListener('click', (evento) => {
   if (evento.target === evento.currentTarget) evento.currentTarget.close();
 });
 
-// 7. Carga
+// ---------- Carga ----------
+
+function ponerCifra(modulo, valor) {
+  for (const nodo of document.querySelectorAll(`[data-conteo="${modulo}"], [data-cifra="${modulo}"]`)) {
+    nodo.textContent = valor;
+  }
+}
 
 async function cargarCartelera() {
   // En el plan gratis de Render el servidor se apaga si no se usa; si tarda,
   // avisamos para que no parezca que la página se dañó.
   const avisoLento = setTimeout(() => {
+    $('#destacada-etiqueta').textContent = 'Encendiendo el proyector…';
     $('#cartelera-estado').textContent = 'El servidor se está encendiendo. Esto puede tardar hasta un minuto…';
   }, 5000);
 
@@ -277,26 +320,27 @@ async function cargarCartelera() {
     // Las más recientes primero; la primera es la destacada.
     estado.producciones = producciones.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     pintarDestacada(estado.producciones[0]);
+    pintarTira();
     pintarFiltros();
     pintarCartelera();
-    $('[data-conteo="media"]').textContent = producciones.length;
+    ponerCifra('media', producciones.length);
   } catch (error) {
     $('#destacada-etiqueta').textContent = 'No se pudo cargar la cartelera';
     $('#cartelera-estado').textContent = 'No se pudo cargar la cartelera. Recarga la página en unos segundos.';
-    $('[data-conteo="media"]').textContent = '—';
+    ponerCifra('media', '—');
+    pintarTira();
     mostrarError(error);
   } finally {
     clearTimeout(avisoLento);
   }
 }
 
-// Conteos de la sección "Administrar el catálogo".
+// Cifras de la barra del escenario y de "Administrar el catálogo".
 async function cargarConteos() {
   const modulos = ['generos', 'directores', 'productoras', 'tipos'];
   const resultados = await Promise.allSettled(modulos.map((m) => listar(m)));
   resultados.forEach((resultado, i) => {
-    $(`[data-conteo="${modulos[i]}"]`).textContent =
-      resultado.status === 'fulfilled' ? resultado.value.length : '—';
+    ponerCifra(modulos[i], resultado.status === 'fulfilled' ? resultado.value.length : '—');
   });
 }
 
