@@ -178,7 +178,7 @@ const chipsGeneros = (media) =>
 const chipsProductoras = (media) =>
   el(
     'ul',
-    { class: 'chips', 'aria-label': 'Productoras' },
+    { class: 'chips', 'aria-label': 'Productora' },
     (media.productoras ?? []).map((p) => el('li', { class: 'chip' }, p.nombre ?? '(sin nombre)'))
   );
 
@@ -220,7 +220,7 @@ const crud = iniciarCrud({
     { titulo: 'Tipo', celda: (m) => m.tipo?.nombre ?? '—' },
     { titulo: 'Géneros', celda: chipsGeneros },
     { titulo: 'Director', celda: (m) => m.director?.nombres ?? '—' },
-    { titulo: 'Productoras', celda: chipsProductoras },
+    { titulo: 'Productora', celda: chipsProductoras },
     {
       titulo: 'Fechas',
       celda: (m) =>

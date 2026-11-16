@@ -290,7 +290,7 @@ function abrirDetalle(media) {
 
   const filas = [
     ['Director', media.director?.nombres],
-    [(media.productoras?.length ?? 0) > 1 ? 'Productoras' : 'Productora', (media.productoras ?? []).map((p) => p.nombre).filter(Boolean).join(', ')],
+    ['Productora', (media.productoras ?? []).map((p) => p.nombre).filter(Boolean).join(', ')],
     ['Serial', media.serial]
   ].filter(([, valor]) => valor);
   $('#detalle-ficha').replaceChildren(
