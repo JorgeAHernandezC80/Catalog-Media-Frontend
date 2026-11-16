@@ -37,7 +37,8 @@ El proyecto separa responsabilidades en capas, de forma parecida al patrón MVC 
 
 * **Páginas `.html`**: La estructura (vista) de cada módulo, con etiquetas semánticas y formularios accesibles.
 * **`css/estilos.css`**: Estilos propios con variables CSS, grid, modo oscuro y tabla responsive.
-* **`css/cartelera.css`**: Estilos de la cartelera (portada pública), separados para no cambiar las pantallas de gestión. Usa las fuentes Cormorant Garamond y Jost (Google Fonts).
+* **`css/cartelera.css`**: Estilos de la cartelera (portada pública). Usa las fuentes Cormorant Garamond y Jost (Google Fonts).
+* **`css/gestion.css`**: Tema de las cinco pantallas de gestión, para que se vean como la cartelera (azul noche, marfil y dorado solo en el botón principal). Se carga después de `estilos.css` y solo cambia la apariencia.
 * **`js/config.js`**: Dirección de la API y máximo de géneros por producción, en un solo lugar.
 * **`js/api.js`**: Única capa que usa `fetch`. Unifica los tres formatos de error del backend.
 * **`js/crud.js`**: Motor genérico de listar, crear, editar y eliminar.
@@ -105,7 +106,7 @@ La interfaz tiene una cartelera de inicio y cinco módulos con la misma secuenci
 
 | Secuencia | Página | Módulo | Detalle |
 | :--- | :--- | :--- | :--- |
-| **1** | `index.html` | Cartelera | Portada pública al estilo de un sitio de cine: película destacada con póster, carrete y cinta de celuloide; grilla de pósters con búsqueda, filtros por tipo y género y ficha de detalle. Las pantallas de gestión se abren desde el enlace «Gestionar» del pie |
+| **1** | `index.html` | Cartelera | Portada pública al estilo de un sitio de cine: película destacada con póster y una claqueta (con sus datos), bobinas y latas de película dibujadas en SVG; grilla de pósters con búsqueda, filtros por tipo y género y ficha de detalle. Las pantallas de gestión se abren desde el enlace «Gestionar» del pie |
 | **2** | `generos.html` | Géneros | Nombre, estado (Activo/Inactivo) y descripción |
 | **3** | `directores.html` | Directores | El campo se llama `nombres`, como en el modelo |
 | **4** | `productoras.html` | Productoras | Nombre, estado, eslogan y descripción |
@@ -171,7 +172,8 @@ El frontend es estático, así que no necesita build:
 Catalog-Media-Frontend/
 ├── css/
 │   ├── estilos.css
-│   └── cartelera.css
+│   ├── cartelera.css
+│   └── gestion.css
 ├── js/
 │   ├── config.js
 │   ├── api.js
