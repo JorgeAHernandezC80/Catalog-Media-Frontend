@@ -79,10 +79,12 @@ npm run dev
 Por defecto queda escuchando en `http://localhost:5000`. El backend ya tiene CORS habilitado (`app.use(cors())`), así que el frontend puede correr en otro puerto sin problema.
 
 ### c. Configurar la dirección de la API
-Todo está en **una sola línea**, en `js/config.js`. No lleva `/` al final:
+La dirección está en `js/config.js` y se elige sola según dónde se abra la página. No hay que cambiarla a mano:
 ```js
-export const API_URL = 'http://localhost:5000/api/v1';
+const API_LOCAL = 'http://localhost:5000/api/v1';                          // en tu PC (Live Server)
+const API_PUBLICA = 'https://catalog-media-api-rest.onrender.com/api/v1';  // publicada en Netlify
 ```
+Si la página se abre en `localhost` o `127.0.0.1`, usa el backend local. En cualquier otro dominio usa el backend publicado en Render. Ninguna de las dos direcciones lleva `/` al final.
 
 ### d. Abrir el frontend con un servidor local
 Con la extensión **Live Server** de VS Code: clic derecho en `index.html` → *Open with Live Server*. Se abrirá en:
@@ -145,11 +147,20 @@ No se pudo conectar con la API. Revisa que el servidor esté encendido y que la 
 
 ## 6. Despliegue en Netlify
 
+El proyecto está publicado en dos servicios:
+
+| Parte | Servicio | URL |
+| :--- | :--- | :--- |
+| Frontend | Netlify | https://catalog-mediaapi.netlify.app |
+| Backend (API) | Render + MongoDB Atlas | https://catalog-media-api-rest.onrender.com |
+
 El frontend es estático, así que no necesita build:
 
 1. En Netlify: *Add new site → Import an existing project* y elegir este repositorio.
 2. Dejar **vacíos** *Build command* y *Publish directory* (o poner `.`).
-3. Antes de publicar, cambiar `API_URL` en `js/config.js` por la URL **pública** del backend (por ejemplo en Render con MongoDB Atlas). Si queda en `localhost`, la página carga pero no puede hablar con la API.
+3. Cada `git push` a la rama `main` vuelve a publicar el sitio automáticamente.
+
+> **Nota:** El backend usa el plan gratuito de Render, que apaga el servidor cuando no recibe visitas. La primera carga después de un rato puede tardar cerca de un minuto; si aparece el aviso de conexión, espera y recarga la página.
 
 ---
 
