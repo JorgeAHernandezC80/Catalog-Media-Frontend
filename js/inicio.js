@@ -159,10 +159,10 @@ function pintarClaqueta(media) {
     const limpio = String(texto ?? '—');
     return limpio.length > maximo ? `${limpio.slice(0, maximo - 1)}…` : limpio;
   };
-  $('#claqueta-produccion').textContent = recortar(media.titulo, 15);
-  $('#claqueta-director').textContent = recortar(media.director?.nombres, 15);
+  $('#claqueta-produccion').textContent = recortar(media.titulo, 20);
+  $('#claqueta-director').textContent = recortar(media.director?.nombres, 20);
   // La claqueta tiene un solo renglón: se muestra la primera productora.
-  $('#claqueta-productora').textContent = recortar(media.productoras?.[0]?.nombre, 15);
+  $('#claqueta-productora').textContent = recortar(media.productoras?.[0]?.nombre, 20);
   $('#claqueta-anio').textContent = recortar(media.anoEstreno, 6);
 }
 
