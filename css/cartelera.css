@@ -1,25 +1,30 @@
-/* Cartelera (página de inicio).
-   Todo va dentro de .cartelera para no cambiar las pantallas de administración,
+/* Cartelera (página de inicio, pública).
+   Todo va dentro de .cartelera para no cambiar las pantallas de gestión,
    que siguen usando solo estilos.css.
-   Idea visual (según el mockup): una sala de cine de noche. Fondo azul muy oscuro,
-   detalles en dorado, telón rojo en los bordes, un carrete con el haz azul del
-   proyector y títulos en una serif clásica en mayúsculas. */
+   Reglas del diseño:
+   - Marfil sobre azul noche. El dorado aparece solo en la etiqueta corta y en el
+     botón principal de cada pantalla.
+   - Mayúsculas solo en etiquetas cortas ("Película destacada", "En cartelera").
+     Títulos, menú y botones van en caja normal.
+   - El póster es el protagonista: sin bordes, con sombra profunda. */
 
 .cartelera {
   --noche: #090c13;
   --noche-media: #0f131c;
-  --panel: #141925;
+  --panel: #151a25;
   --oro: #c9a24f;
-  --oro-claro: #e3c47e;
+  --oro-claro: #dcbb72;
   --marfil: #ece6da;
-  --gris-calido: #a9a398;
-  --linea: rgb(201 162 79 / 0.22);
-  --linea-suave: rgb(236 230 218 / 0.12);
+  --marfil-suave: #c9c2b6;
+  --gris-calido: #948e84;
+  --linea: rgb(236 230 218 / 0.14);
+  --linea-fuerte: rgb(236 230 218 / 0.32);
   --telon: #6e1119;
-  --haz: #5b93ff;
 
   --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --sans: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+
+  --sombra-poster: 0 2px 4px rgb(0 0 0 / 0.4), 0 18px 40px rgb(0 0 0 / 0.55), 0 40px 80px rgb(0 0 0 / 0.35);
 
   background: var(--noche);
   color: var(--marfil);
@@ -27,17 +32,16 @@
   color-scheme: dark;
 }
 
-.cartelera a { color: var(--oro-claro); }
-.cartelera :focus-visible { outline-color: var(--oro); }
+.cartelera a { color: var(--marfil); }
+.cartelera :focus-visible { outline-color: var(--marfil); }
 
-/* Etiquetas pequeñas en mayúsculas espaciadas, como en el mockup. */
-.etiqueta,
-.destacada-etiqueta {
-  margin: 0 0 0.6rem;
+/* Única etiqueta en mayúsculas, y una de las dos piezas doradas. */
+.etiqueta {
+  margin: 0 0 0.75rem;
   color: var(--oro);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
@@ -47,98 +51,76 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   z-index: 20;
-  background: linear-gradient(180deg, rgb(9 12 19 / 0.85), transparent);
+  background: linear-gradient(180deg, rgb(9 12 19 / 0.8), transparent);
 }
-.cartelera .cabecera-interior { max-width: 1280px; padding: 1.4rem 2rem; gap: 1rem 2rem; flex-wrap: nowrap; }
+.cartelera .cabecera-interior { max-width: 1240px; padding: 1.5rem 2rem; }
 
 .cartelera .marca {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--oro);
-  text-decoration: none;
-  flex-shrink: 0;
-}
-.marca-icono { width: 2.4rem; height: 2.4rem; }
-.marca-texto { display: flex; flex-direction: column; line-height: 1.05; }
-.marca-nombre { font-family: var(--serif); font-weight: 600; font-size: 1.55rem; letter-spacing: 0.14em; text-transform: uppercase; }
-.marca-sub { font-size: 0.68rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--marfil); }
-
-.cartelera .cabecera nav ul { gap: 0.25rem 1.6rem; justify-content: center; }
-.cartelera .cabecera nav a {
+  gap: 0.7rem;
   color: var(--marfil);
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.5rem 0;
+  text-decoration: none;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.45rem;
+  letter-spacing: 0.01em;
+}
+.marca-icono { width: 1.9rem; height: 1.9rem; }
+
+.cartelera .cabecera nav ul { gap: 0.25rem 2rem; }
+.cartelera .cabecera nav a {
+  color: var(--marfil-suave);
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
   border-radius: 0;
   border-bottom: 1px solid transparent;
 }
-.cartelera .cabecera nav a:hover { background: none; color: var(--oro-claro); }
-.cartelera .cabecera nav a[aria-current="page"] { background: none; color: var(--marfil); font-weight: 500; border-bottom-color: var(--oro); }
+.cartelera .cabecera nav a:hover { background: none; color: var(--marfil); }
+.cartelera .cabecera nav a[aria-current="page"] { background: none; color: var(--marfil); font-weight: 500; border-bottom-color: var(--marfil); }
 
-.boton-boleto {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  flex-shrink: 0;
-  padding: 0.75rem 1.2rem;
-  border: 1px solid var(--oro);
-  color: var(--oro) !important;
-  text-decoration: none;
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.boton-boleto svg { width: 1.6rem; height: 1rem; }
-.boton-boleto:hover { background: rgb(201 162 79 / 0.12); }
-
-/* main de estilos.css tiene ancho máximo; aquí el escenario ocupa todo el ancho. */
 .cartelera main { max-width: none; padding: 0; }
-.cartelera .contenedor { max-width: 1280px; margin: 0 auto; padding: 4rem 2rem 3rem; }
+.cartelera .contenedor { max-width: 1240px; margin: 0 auto; padding: 4.5rem 2rem 4rem; }
 
 /* ---------- Botones ---------- */
 
+/* Botón principal: la otra pieza dorada de la pantalla. */
 .boton-oro {
   display: inline-flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 1rem 1.4rem;
+  gap: 0.75rem;
+  padding: 0.9rem 1.5rem;
   background: var(--oro);
   color: #14110a !important;
   text-decoration: none;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
   border: 0;
+  border-radius: 2px;
   cursor: pointer;
 }
 .boton-oro:hover { background: var(--oro-claro); }
-.boton-oro svg { width: 0.75rem; height: 0.9rem; }
+.boton-oro svg { width: 0.7rem; height: 0.85rem; }
 
 .boton-texto {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 0.2rem;
+  gap: 0.7rem;
+  padding: 0.9rem 0.2rem;
   background: none;
   border: 0;
   color: var(--marfil);
   font-family: inherit;
-  font-size: 0.82rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-size: 0.98rem;
   cursor: pointer;
 }
-.boton-texto svg { width: 1.1rem; height: 0.9rem; transition: transform 0.15s; }
-.boton-texto:hover { color: var(--oro-claro); }
+.boton-texto svg { width: 1.05rem; height: 0.85rem; transition: transform 0.15s; }
 .boton-texto:hover svg { transform: translateX(3px); }
 
 .enlace-boton {
   font: inherit;
-  color: var(--oro-claro);
+  color: var(--marfil);
   background: none;
   border: 0;
   padding: 0;
@@ -152,56 +134,115 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  min-height: max(720px, 100vh);
-  display: flex;
-  flex-direction: column;
   background:
-    radial-gradient(ellipse at 70% 30%, rgb(40 60 110 / 0.35), transparent 55%),
-    radial-gradient(ellipse at 30% 60%, rgb(30 40 70 / 0.35), transparent 60%),
+    radial-gradient(ellipse at 78% 28%, rgb(40 62 115 / 0.4), transparent 50%),
+    radial-gradient(ellipse at 35% 70%, rgb(28 38 66 / 0.35), transparent 60%),
     var(--noche);
 }
 
-/* Telón: pliegues rojos que se oscurecen hacia el centro. */
+/* Telón: pliegues rojos que se apagan hacia el centro. */
 .telon {
   position: absolute;
   top: 0; bottom: 0;
-  width: clamp(40px, 9vw, 150px);
+  width: clamp(28px, 7vw, 120px);
   z-index: -1;
   background:
-    repeating-linear-gradient(90deg,
-      rgb(0 0 0 / 0.55) 0 4px,
-      rgb(150 25 35 / 0.0) 10px,
-      rgb(0 0 0 / 0.35) 18px 22px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.5) 0 4px, transparent 10px, rgb(0 0 0 / 0.3) 18px 22px),
     linear-gradient(180deg, #7d141d, var(--telon) 60%, #3a0a0f);
-  opacity: 0.85;
+  opacity: 0.8;
 }
-.telon-izquierdo { left: 0; mask-image: linear-gradient(90deg, #000 20%, transparent); }
-.telon-derecho { right: 0; mask-image: linear-gradient(270deg, #000 20%, transparent); }
+.telon-izquierdo { left: 0; mask-image: linear-gradient(90deg, #000 15%, transparent); }
+.telon-derecho { right: 0; mask-image: linear-gradient(270deg, #000 15%, transparent); }
+
+/* Texto | póster | carrete, en una cuadrícula. La cinta va en la fila de abajo. */
+.escenario-interior {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 8.5rem 2rem 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(220px, 300px) minmax(0, 0.85fr);
+  grid-template-areas:
+    "texto portada proyector"
+    "texto portada cinta";
+  column-gap: 3rem;
+  align-items: center;
+}
+
+.destacada-texto { grid-area: texto; max-width: 33rem; }
+
+.escenario h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.8rem, 5.6vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.1rem;
+  text-wrap: balance;
+}
+
+.destacada-meta {
+  margin: 0 0 1.4rem;
+  font-size: 0.98rem;
+  color: var(--marfil-suave);
+}
+.destacada-sinopsis {
+  margin: 0 0 2.2rem;
+  max-width: 31rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--marfil);
+}
+.destacada-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 2rem; min-height: 3rem; }
+
+.destacada-portada {
+  grid-area: portada;
+  margin: 0;
+  align-self: center;
+}
+.destacada-imagen {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--panel);
+  box-shadow: var(--sombra-poster);
+}
+.destacada-imagen > * { width: 100%; height: 100%; }
+.destacada-imagen img { object-fit: cover; display: block; }
 
 /* Carrete y haz del proyector. */
 .proyector {
-  position: absolute;
+  grid-area: proyector;
+  position: relative;
   z-index: -1;
-  right: 6%;
-  top: 11%;
-  width: min(30vw, 400px);
+  width: min(100%, 320px);
   aspect-ratio: 1;
+  justify-self: end;
+  align-self: end;
 }
 .carrete { width: 100%; height: 100%; filter: drop-shadow(0 30px 40px rgb(0 0 0 / 0.6)); }
 
+/* El haz sale del centro del carrete hacia arriba y a la izquierda.
+   El difuminado va en .haz y el recorte en .haz-luz: si van en el mismo
+   elemento, el recorte deja los bordes duros. */
 .haz {
   position: absolute;
-  top: 50%;
   right: 50%;
-  width: 95%;
-  height: 120%;
-  transform-origin: 100% 0;
-  transform: translateY(0) rotate(-8deg);
-  background: linear-gradient(270deg, rgb(160 200 255 / 0.95), rgb(91 147 255 / 0.45) 30%, rgb(91 147 255 / 0.08) 75%, transparent);
-  clip-path: polygon(100% 0, 0 -60%, 0 30%);
-  filter: blur(10px);
-  mix-blend-mode: screen;
+  bottom: 50%;
+  width: 130%;
+  height: 150%;
+  filter: blur(9px);
   animation: encender-haz 1.4s ease-out 0.3s both;
+}
+.haz-luz {
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(100% 100%, 0 0, 0 38%);
+  background: radial-gradient(circle at 100% 100%,
+    rgb(235 244 255 / 1) 0%,
+    rgb(140 185 255 / 0.8) 12%,
+    rgb(91 147 255 / 0.4) 40%,
+    rgb(91 147 255 / 0.1) 75%,
+    transparent 95%);
 }
 @keyframes encender-haz {
   from { opacity: 0; }
@@ -210,237 +251,156 @@
   to { opacity: 1; }
 }
 
-/* Cinta de película con los pósters del catálogo. */
-.tira {
-  position: absolute;
-  z-index: -1;
-  right: -8%;
-  bottom: 13%;
-  width: 72%;
-  transform: rotate(-16deg) skewX(-6deg);
-  transform-origin: right center;
-  background: #0d0e10;
-  padding: 18px 0;
-  box-shadow: 0 20px 50px rgb(0 0 0 / 0.7), inset 0 0 0 1px rgb(255 255 255 / 0.06);
-  mask-image: linear-gradient(90deg, transparent, #000 25%);
+/* Cinta de celuloide: corta, casi horizontal, con perforaciones y las
+   portadas del catálogo como fotogramas. */
+.cinta {
+  grid-area: cinta;
+  align-self: start;
+  margin-top: -2.5rem;
+  transform: rotate(-3deg);
+  position: relative;
+  padding: 15px 0;
+  background: #121212;
+  border-radius: 2px;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.6);
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
-/* Perforaciones arriba y abajo. */
-.tira::before,
-.tira::after {
+.cinta::before,
+.cinta::after {
   content: "";
   position: absolute;
   left: 0; right: 0;
-  height: 8px;
-  background: repeating-linear-gradient(90deg, rgb(210 205 195 / 0.55) 0 9px, transparent 9px 22px);
-  border-radius: 2px;
+  height: 6px;
+  background: radial-gradient(ellipse 4px 3px at 50% 50%, rgb(225 220 208 / 0.75) 92%, transparent) 0 0 / 14px 6px repeat-x;
 }
-.tira::before { top: 5px; }
-.tira::after { bottom: 5px; }
+.cinta::before { top: 4px; }
+.cinta::after { bottom: 4px; }
 
-.tira-cuadros { display: flex; gap: 8px; padding: 0 8px; }
+.cinta-cuadros { display: flex; gap: 5px; padding: 0 5px; }
 .cuadro {
-  flex: 0 0 150px;
-  height: 100px;
-  background: #1a1c22;
+  flex: 0 0 96px;
+  height: 64px;
+  background: #1c1c1c;
   overflow: hidden;
+  border-radius: 1px;
 }
-.cuadro img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.55) brightness(0.55) contrast(1.1); }
+.cuadro img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.25) saturate(0.7) brightness(0.75); }
 
-/* Contenido del escenario: texto a la izquierda y el póster que queda detrás. */
-.escenario-interior {
-  position: relative;
-  flex: 1;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 9.5rem 2rem 3rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-}
-
-.destacada-texto { position: relative; z-index: 2; max-width: 34rem; }
-
-.escenario h1 {
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: clamp(2.8rem, 6.2vw, 5.4rem);
-  line-height: 1;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  margin: 0 0 1.4rem;
-  text-wrap: balance;
-  text-shadow: 0 2px 30px rgb(0 0 0 / 0.7);
-}
-
-.destacada-meta {
-  margin: 0 0 1.4rem;
-  font-size: 0.82rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--marfil);
-}
-.destacada-sinopsis {
-  margin: 0 0 2.2rem;
-  max-width: 30rem;
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: var(--marfil);
-  text-shadow: 0 1px 12px rgb(0 0 0 / 0.8);
-}
-.destacada-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
-
-/* El póster va detrás del texto, un poco a la derecha, con el sello dorado. */
-.destacada-portada {
-  position: absolute;
-  z-index: 1;
-  left: calc(2rem + 18%);
-  top: 7.5rem;
-  width: clamp(240px, 27vw, 340px);
-  aspect-ratio: 2 / 3;
-  background: var(--panel);
-  border: 1px solid var(--linea-suave);
-  box-shadow: 0 40px 80px rgb(0 0 0 / 0.65);
-  overflow: hidden;
-}
-.destacada-imagen, .destacada-imagen > * { width: 100%; height: 100%; }
-.destacada-imagen img { object-fit: cover; display: block; }
-/* Oscurece el lado izquierdo del póster para que el texto encima se lea. */
-.destacada-portada::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgb(9 12 19 / 0.9) 0%, rgb(9 12 19 / 0.35) 45%, transparent 70%),
-    linear-gradient(0deg, rgb(9 12 19 / 0.95) 0%, transparent 40%);
-}
-
-.sello {
-  position: absolute;
-  z-index: 1;
-  left: 0; right: 0; bottom: 1.6rem;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--serif);
-  color: var(--oro);
-  text-transform: uppercase;
-  text-align: center;
-}
-.sello span:first-child { font-size: 1.15rem; letter-spacing: 0.22em; }
-.sello span:last-child { font-size: 0.95rem; letter-spacing: 0.16em; }
-
-/* Barra inferior con cifras del catálogo. */
+/* Barra inferior con cifras del catálogo, en marfil. */
 .cifras {
-  position: relative;
-  z-index: 2;
+  max-width: calc(1240px - 4rem);
+  margin: 2.5rem auto 0;
   width: calc(100% - 4rem);
-  max-width: calc(1280px - 4rem);
-  margin: 0 auto;
-  padding: 1.6rem 0 2rem;
-  border-top: 1px solid var(--linea-suave);
+  padding: 1.4rem 0 1.8rem;
+  border-top: 1px solid var(--linea);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
 }
-.cifras ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem 0; }
-.cifras li {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0 2rem;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--marfil);
-}
+.cifras ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 0; }
+.cifras li { padding: 0 1.75rem; color: var(--marfil-suave); font-size: 0.95rem; }
 .cifras li:first-child { padding-left: 0; }
-.cifras li + li { border-left: 1px solid var(--oro); }
-.cifras svg { width: 2rem; height: 2rem; color: var(--oro); flex-shrink: 0; }
-.cifras strong { color: var(--oro-claro); font-weight: 500; }
+.cifras li + li { border-left: 1px solid var(--linea); }
+.cifras strong { color: var(--marfil); font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .descubrir {
   display: inline-flex;
   align-items: center;
   gap: 1rem;
-  color: var(--marfil) !important;
   text-decoration: none;
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  color: var(--marfil-suave) !important;
 }
-.descubrir-linea { position: relative; width: 5.5rem; height: 1px; background: var(--oro); }
+.descubrir:hover { color: var(--marfil) !important; }
+.descubrir-linea { position: relative; width: 4.5rem; height: 1px; background: var(--linea-fuerte); }
 .descubrir-linea::after {
   content: "";
   position: absolute;
   right: -3px; top: -3px;
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--oro);
+  background: var(--marfil);
 }
-.descubrir:hover { color: var(--oro-claro) !important; }
+
+/* ---------- Esqueletos de carga ---------- */
+
+.esqueleto {
+  display: block;
+  border-radius: 3px;
+  background:
+    linear-gradient(100deg, transparent 30%, rgb(236 230 218 / 0.07) 50%, transparent 70%) 0 0 / 200% 100%,
+    var(--panel);
+  animation: brillo 1.4s linear infinite;
+}
+@keyframes brillo {
+  from { background-position: 150% 0, 0 0; }
+  to { background-position: -50% 0, 0 0; }
+}
+.esqueleto-titulo { height: 0.9em; width: 80%; margin-top: 0.1em; }
+.esqueleto-linea { height: 0.9em; width: 100%; margin: 0.45em 0; }
+.esqueleto-linea.corta { width: 60%; }
+.escenario.cargando .destacada-meta .esqueleto-linea { width: 55%; }
+.escenario.cargando .cifras { visibility: hidden; }
 
 /* ---------- Catálogo ---------- */
 
-.cartelera-cabecera { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.5rem; margin-bottom: 1.75rem; }
+.cartelera-cabecera { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.5rem; margin-bottom: 2rem; }
 .cartelera h2 {
   font-family: var(--serif);
   font-weight: 500;
   font-size: clamp(2.2rem, 4vw, 3rem);
-  line-height: 1;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
-.cartelera-total { margin: 0; color: var(--gris-calido); font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase; }
+.cartelera-total { margin: 0; color: var(--gris-calido); font-size: 0.95rem; }
 
-.herramientas { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.herramientas { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; margin-bottom: 1.1rem; }
 
-.buscador { display: flex; flex-direction: column; gap: 0.45rem; flex: 1 1 260px; max-width: 400px; }
-.buscador label { font-size: 0.75rem; color: var(--gris-calido); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
+.buscador { display: flex; flex-direction: column; gap: 0.3rem; flex: 1 1 260px; max-width: 380px; }
+.buscador label { font-size: 0.88rem; color: var(--gris-calido); font-weight: 400; }
 .cartelera .buscador input {
   background: transparent;
   color: var(--marfil);
   border: 0;
-  border-bottom: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea-fuerte);
   border-radius: 0;
-  padding: 0.6rem 0;
+  padding: 0.55rem 0;
   font-size: 1.05rem;
 }
-.cartelera .buscador input::placeholder { color: #6f6a62; }
-.cartelera .buscador input:hover, .cartelera .buscador input:focus { border-bottom-color: var(--oro); }
+.cartelera .buscador input::placeholder { color: #6a655d; }
+.cartelera .buscador input:hover, .cartelera .buscador input:focus { border-bottom-color: var(--marfil); }
 
-.grupo-filtro { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.grupo-filtro { display: flex; flex-wrap: wrap; gap: 0.45rem; }
 
 .filtro-opcion {
   font: inherit;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gris-calido);
+  font-size: 0.9rem;
+  color: var(--marfil-suave);
   background: transparent;
   border: 1px solid var(--linea);
-  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
   cursor: pointer;
 }
-.filtro-opcion:hover { color: var(--marfil); border-color: var(--oro); }
-.filtro-opcion[aria-pressed="true"] { background: var(--oro); border-color: var(--oro); color: #14110a; }
+.filtro-opcion:hover { color: var(--marfil); border-color: var(--linea-fuerte); }
+.filtro-opcion[aria-pressed="true"] { background: var(--marfil); border-color: var(--marfil); color: var(--noche); }
 
-.filtro-generos { margin-bottom: 2.5rem; }
+.filtro-generos { margin-bottom: 2.75rem; }
 
-.cartelera-estado { color: var(--gris-calido); margin: 1rem 0 2.5rem; }
+.cartelera-estado { color: var(--gris-calido); margin: 0 0 1.5rem; }
 
+/* Grilla de pósters. */
 .funciones {
   list-style: none;
-  margin: 0 0 4rem;
+  margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 2.5rem 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 3rem 1.75rem;
 }
 
 .funcion {
@@ -451,77 +411,88 @@
   border: 0;
   padding: 0;
   width: 100%;
+  min-width: 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.25rem;
 }
 .funcion-portada {
   display: block;
   aspect-ratio: 2 / 3;
+  margin-bottom: 0.85rem;
   overflow: hidden;
+  border-radius: 3px;
   background: var(--panel);
-  border: 1px solid var(--linea-suave);
-  outline: 1px solid transparent;
-  outline-offset: 4px;
-  transition: outline-color 0.15s;
+  box-shadow: var(--sombra-poster);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .funcion-portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Al pasar el mouse o con el teclado, el póster sube. */
 .funcion:hover .funcion-portada,
-.funcion:focus-visible .funcion-portada { outline-color: var(--oro); }
+.funcion:focus-visible .funcion-portada {
+  transform: translateY(-6px);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.4), 0 28px 56px rgb(0 0 0 / 0.65), 0 50px 100px rgb(0 0 0 / 0.4);
+}
 .cartelera .funcion:focus-visible { outline: none; }
+.cartelera .funcion:focus-visible .funcion-portada { outline: 2px solid var(--marfil); outline-offset: 4px; }
 
-.funcion-titulo { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; line-height: 1.15; }
-.funcion-datos { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gris-calido); }
+.funcion-titulo {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.funcion-datos { font-size: 0.88rem; color: var(--gris-calido); }
 
-/* Póster de reemplazo: fondo oscuro con marco dorado y el título en serif. */
+.funcion-esqueleto .esqueleto { aspect-ratio: 2 / 3; }
+
+/* Póster de reemplazo: panel oscuro con el título en serif. */
 .poster-vacio {
   width: 100%;
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 1.2rem;
+  padding: 1.4rem;
   text-align: center;
   background:
-    radial-gradient(ellipse at 50% 35%, rgb(60 80 130 / 0.35), transparent 70%),
+    radial-gradient(ellipse at 50% 30%, rgb(60 80 130 / 0.35), transparent 70%),
     var(--panel);
-  box-shadow: inset 0 0 0 10px var(--panel), inset 0 0 0 11px var(--linea);
 }
 .poster-vacio span {
   font-family: var(--serif);
   font-weight: 500;
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   line-height: 1.1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--oro-claro);
+  color: var(--marfil);
   text-wrap: balance;
 }
 
-/* ---------- Administrar ---------- */
-
-.administrar { border-top: 1px solid var(--linea-suave); padding-top: 3rem; }
-.cartelera .administrar h2 { font-size: 2rem; margin-bottom: 1.4rem; }
-.administrar-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.administrar-lista a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  text-decoration: none;
-  color: var(--marfil);
-  border: 1px solid var(--linea);
-  padding: 0.75rem 1.1rem;
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.administrar-lista a:hover { border-color: var(--oro); }
-.administrar-lista span { color: var(--oro-claro); font-variant-numeric: tabular-nums; }
-
 /* ---------- Mensajes y pie ---------- */
 
-.cartelera .mensaje-error { background: #2a1216; border-color: #e58a8a; color: #f6caca; border-radius: 0; }
-.cartelera .pie { border-top-color: var(--linea-suave); color: var(--gris-calido); padding: 1.5rem; }
+.cartelera .mensaje-error { background: #2a1216; border-color: #e58a8a; color: #f6caca; border-radius: 2px; }
+
+.cartelera .pie {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: calc(1240px - 4rem);
+  width: calc(100% - 4rem);
+  margin: 0 auto;
+  padding: 1.6rem 0 2rem;
+  border-top: 1px solid var(--linea);
+  color: var(--gris-calido);
+  font-size: 0.9rem;
+  text-align: left;
+}
+.cartelera .pie p { font-family: var(--serif); font-size: 1.1rem; color: var(--marfil-suave); }
+.pie-gestionar { color: var(--gris-calido) !important; text-decoration: none; font-size: 0.88rem; }
+.pie-gestionar:hover { color: var(--marfil) !important; text-decoration: underline; }
 
 /* ---------- Ficha de detalle ---------- */
 
@@ -529,11 +500,12 @@
   background: var(--noche-media);
   color: var(--marfil);
   border: 1px solid var(--linea);
-  border-radius: 0;
+  border-radius: 4px;
   padding: 0;
   width: min(900px, calc(100vw - 2rem));
   max-width: none;
   max-height: calc(100vh - 2rem);
+  box-shadow: 0 40px 100px rgb(0 0 0 / 0.7);
 }
 .cartelera dialog.detalle::backdrop { background: rgb(4 6 10 / 0.82); }
 .detalle[open] { animation: abrir-ficha 0.2s ease-out; }
@@ -547,55 +519,63 @@
 .detalle-portada > * { width: 100%; height: 100%; }
 .detalle-portada img { object-fit: cover; display: block; }
 
-.detalle-texto { padding: 2.2rem 2.2rem 1.6rem; display: flex; flex-direction: column; gap: 1.1rem; }
-.cartelera .detalle h2 { font-size: 2.6rem; margin: 0; text-wrap: balance; }
-.detalle .destacada-meta { margin: 0; color: var(--oro); }
-.detalle-sinopsis { margin: 0; line-height: 1.65; }
+.detalle-texto { padding: 2.2rem 2.2rem 1.6rem; display: flex; flex-direction: column; gap: 1rem; }
+.cartelera .detalle h2 { font-size: 2.5rem; margin: 0; text-wrap: balance; }
+.detalle .destacada-meta { margin: 0; }
+.detalle-sinopsis { margin: 0; line-height: 1.7; }
 
 .generos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.generos li { border: 1px solid var(--linea); padding: 0.2rem 0.7rem; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris-calido); }
+.generos li { border: 1px solid var(--linea); border-radius: 999px; padding: 0.15rem 0.75rem; font-size: 0.85rem; color: var(--marfil-suave); }
 
 .detalle-ficha { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1.5rem; }
-.detalle-ficha dt { color: var(--gris-calido); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; padding-top: 0.15rem; }
+.detalle-ficha dt { color: var(--gris-calido); }
 .detalle-ficha dd { margin: 0; }
 
 .detalle-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.75rem; margin-top: auto; padding-top: 0.5rem; }
 .detalle-acciones form { margin: 0; }
 
-/* ---------- Pantallas medianas y pequeñas ---------- */
+/* ---------- Pantallas medianas ---------- */
 
-@media (max-width: 1100px) {
-  .cartelera .cabecera-interior { flex-wrap: wrap; justify-content: space-between; }
-  .cartelera .cabecera nav { order: 3; width: 100%; }
-  .cartelera .cabecera nav ul { justify-content: flex-start; }
-  .escenario-interior { padding-top: 11rem; }
-  .destacada-portada { top: 10rem; }
+@media (max-width: 1000px) {
+  .escenario-interior {
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 260px);
+    grid-template-areas:
+      "texto portada"
+      "cinta cinta";
+    row-gap: 2.5rem;
+  }
+  .proyector { display: none; }
+  .cinta { margin-top: 0; transform: rotate(-1.5deg); }
 }
 
-@media (max-width: 860px) {
-  .cartelera .cabecera { position: relative; background: var(--noche); }
-  .cartelera .cabecera-interior { padding: 1rem 1.25rem; }
-  .cartelera .cabecera nav ul { gap: 0.25rem 1.1rem; }
-  .boton-boleto { padding: 0.6rem 0.8rem; }
+/* ---------- Celular ---------- */
 
-  .escenario { min-height: 0; }
-  .proyector { width: 46vw; right: -10%; top: 2rem; opacity: 0.55; }
-  .tira { display: none; }
-  .telon { width: 28px; }
+@media (max-width: 640px) {
+  .cartelera .cabecera-interior { padding: 1.1rem 1.25rem; }
+  .cartelera .marca { font-size: 1.25rem; }
+  .cartelera .cabecera nav ul { gap: 0.25rem 1.25rem; }
 
-  .escenario-interior { padding: 2rem 1.25rem 2rem; display: flex; flex-direction: column-reverse; gap: 2rem; align-items: flex-start; }
-  .destacada-portada { position: relative; left: auto; top: auto; width: min(260px, 70vw); }
-  .destacada-portada::after { background: linear-gradient(0deg, rgb(9 12 19 / 0.95) 0%, transparent 45%); }
+  .escenario-interior {
+    padding: 6.5rem 1.25rem 0.5rem;
+    grid-template-columns: 1fr;
+    grid-template-areas: "portada" "texto" "cinta";
+    row-gap: 2rem;
+  }
+  .destacada-portada { width: min(220px, 62vw); }
+  .telon { width: 22px; }
 
   .cifras { width: calc(100% - 2.5rem); }
   .cifras ul { flex-direction: column; }
   .cifras li, .cifras li:first-child { padding: 0; }
   .cifras li + li { border-left: 0; }
 
-  .cartelera .contenedor { padding: 3rem 1.25rem 2.5rem; }
+  .cartelera .contenedor { padding: 3.5rem 1.25rem 3rem; }
   .filtro-generos { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: thin; }
   .filtro-opcion { white-space: nowrap; }
-  .funciones { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
+  .funciones { grid-template-columns: repeat(2, 1fr); gap: 2.25rem 1rem; }
+  .funcion-titulo { font-size: 1.15rem; }
+
+  .cartelera .pie { width: calc(100% - 2.5rem); }
 
   .detalle-interior { grid-template-columns: 1fr; }
   .detalle-portada { width: 55%; margin: 1.5rem auto 0; }
@@ -604,6 +584,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .haz, .detalle[open] { animation: none; }
+  .haz, .detalle[open], .esqueleto { animation: none; }
   .funcion-portada, .boton-texto svg { transition: none; }
+  .funcion:hover .funcion-portada, .funcion:focus-visible .funcion-portada { transform: none; }
 }

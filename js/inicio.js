@@ -1,6 +1,6 @@
 // Página de inicio en forma de cartelera de cine.
 // - Arriba, en el "escenario", muestra la última producción agregada como destacada,
-//   con su póster y una cinta de película con los pósters del catálogo.
+//   con su póster y una cinta de celuloide con las portadas del catálogo.
 // - Abajo muestra todas las producciones como pósters, con búsqueda por título
 //   y filtros por tipo y por género.
 // - Al hacer clic en un póster se abre una ficha con el detalle.
@@ -103,6 +103,14 @@ function listaGeneros(media) {
 
 // ---------- Escenario (película destacada) ----------
 
+// Quita los esqueletos de carga del escenario.
+function terminarCarga() {
+  const escenario = $('#escenario');
+  escenario.classList.remove('cargando');
+  escenario.setAttribute('aria-busy', 'false');
+  $('#destacada-imagen').classList.remove('esqueleto');
+}
+
 function pintarDestacada(media) {
   const etiqueta = $('#destacada-etiqueta');
   const titulo = $('#destacada-titulo');
@@ -111,11 +119,13 @@ function pintarDestacada(media) {
   const acciones = $('#destacada-acciones');
   const portada = $('#destacada-portada');
 
+  terminarCarga();
+
   if (!media) {
-    etiqueta.textContent = 'La cartelera está vacía';
-    titulo.textContent = 'Catálogo de películas y series';
+    etiqueta.textContent = 'Cartelera vacía';
+    titulo.textContent = 'Aún no hay funciones';
     meta.textContent = '';
-    sinopsis.textContent = 'Todavía no hay producciones registradas. Agrega la primera desde el módulo Media y aparecerá aquí.';
+    sinopsis.textContent = 'Cuando se agregue la primera producción, aparecerá aquí.';
     acciones.replaceChildren(el('a', { class: 'boton-oro', href: 'media.html' }, 'Agregar una producción', iconoFlecha()));
     portada.hidden = true;
     return;
@@ -138,22 +148,24 @@ function pintarDestacada(media) {
   );
 
   $('#destacada-imagen').replaceChildren(poster(media, { perezoso: false }));
-  $('#sello-anio').textContent = `Catálogo de Media ${media.anoEstreno ?? ''}`.trim();
   portada.hidden = false;
 }
 
-// Cinta de película: repite los pósters del catálogo hasta llenar los cuadros.
-function pintarTira() {
+// Cinta de celuloide: las portadas del catálogo como fotogramas.
+// Si ninguna producción tiene portada, la cinta no se muestra.
+function pintarCinta() {
   const conPortada = estado.producciones.filter((m) => urlSegura(m.portada));
+  const contenedor = $('#cinta-contenedor');
+  contenedor.hidden = conPortada.length === 0;
+  if (!conPortada.length) return;
+
   const cuadros = [];
-  for (let i = 0; i < 14; i++) {
-    const media = conPortada.length ? conPortada[i % conPortada.length] : null;
-    cuadros.push(
-      el('span', { class: 'cuadro' },
-        media ? el('img', { src: urlSegura(media.portada), alt: '', loading: 'lazy', onerror: (e) => e.target.remove() }) : null)
-    );
+  for (let i = 0; i < 8; i++) {
+    const media = conPortada[i % conPortada.length];
+    cuadros.push(el('span', { class: 'cuadro' },
+      el('img', { src: urlSegura(media.portada), alt: '', loading: 'lazy', onerror: (e) => e.target.remove() })));
   }
-  $('#tira').replaceChildren(...cuadros);
+  $('#cinta').replaceChildren(...cuadros);
 }
 
 // ---------- Filtros ----------
@@ -245,6 +257,7 @@ function pintarCartelera() {
     ? `${total} ${total === 1 ? 'producción' : 'producciones'}`
     : `${visibles.length} de ${total} producciones`;
 
+  lista.setAttribute('aria-busy', 'false');
   lista.replaceChildren(...visibles.map(tarjeta));
   lista.hidden = visibles.length === 0;
   aviso.hidden = visibles.length !== 0;
@@ -302,45 +315,48 @@ $('#detalle').addEventListener('click', (evento) => {
 // ---------- Carga ----------
 
 function ponerCifra(modulo, valor) {
-  for (const nodo of document.querySelectorAll(`[data-conteo="${modulo}"], [data-cifra="${modulo}"]`)) {
-    nodo.textContent = valor;
-  }
+  for (const nodo of document.querySelectorAll(`[data-cifra="${modulo}"]`)) nodo.textContent = valor;
 }
 
 async function cargarCartelera() {
-  // En el plan gratis de Render el servidor se apaga si no se usa; si tarda,
-  // avisamos para que no parezca que la página se dañó.
+  // En el plan gratis de Render el servidor se apaga si no se usa. Si tarda,
+  // avisamos debajo de los esqueletos para que no parezca que la página se dañó.
   const avisoLento = setTimeout(() => {
-    $('#destacada-etiqueta').textContent = 'Encendiendo el proyector…';
-    $('#cartelera-estado').textContent = 'El servidor se está encendiendo. Esto puede tardar hasta un minuto…';
-  }, 5000);
+    const aviso = $('#cartelera-estado');
+    aviso.textContent = 'El servidor se está encendiendo; puede tardar hasta un minuto.';
+    aviso.hidden = false;
+  }, 6000);
 
   try {
     const producciones = await listar('media');
     // Las más recientes primero; la primera es la destacada.
     estado.producciones = producciones.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     pintarDestacada(estado.producciones[0]);
-    pintarTira();
+    pintarCinta();
     pintarFiltros();
     pintarCartelera();
     ponerCifra('media', producciones.length);
   } catch (error) {
-    $('#destacada-etiqueta').textContent = 'No se pudo cargar la cartelera';
-    $('#cartelera-estado').textContent = 'No se pudo cargar la cartelera. Recarga la página en unos segundos.';
-    ponerCifra('media', '—');
-    pintarTira();
+    terminarCarga();
+    $('#destacada-etiqueta').textContent = 'Sin conexión';
+    $('#destacada-titulo').textContent = 'No se pudo cargar la cartelera';
+    $('#destacada-meta').textContent = '';
+    $('#destacada-sinopsis').textContent = 'Recarga la página en unos segundos.';
+    $('#destacada-portada').hidden = true;
+    $('#funciones').replaceChildren();
+    $('#funciones').hidden = true;
     mostrarError(error);
   } finally {
     clearTimeout(avisoLento);
   }
 }
 
-// Cifras de la barra del escenario y de "Administrar el catálogo".
-async function cargarConteos() {
-  const modulos = ['generos', 'directores', 'productoras', 'tipos'];
+// Cifras de la barra inferior del escenario.
+async function cargarCifras() {
+  const modulos = ['generos', 'directores'];
   const resultados = await Promise.allSettled(modulos.map((m) => listar(m)));
   resultados.forEach((resultado, i) => {
-    ponerCifra(modulos[i], resultado.status === 'fulfilled' ? resultado.value.length : '—');
+    if (resultado.status === 'fulfilled') ponerCifra(modulos[i], resultado.value.length);
   });
 }
 
@@ -350,4 +366,4 @@ $('#buscar').addEventListener('input', (evento) => {
 });
 
 cargarCartelera();
-cargarConteos();
+cargarCifras();

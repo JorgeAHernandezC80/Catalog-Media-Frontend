@@ -37,6 +37,7 @@ El proyecto separa responsabilidades en capas, de forma parecida al patrón MVC 
 
 * **Páginas `.html`**: La estructura (vista) de cada módulo, con etiquetas semánticas y formularios accesibles.
 * **`css/estilos.css`**: Estilos propios con variables CSS, grid, modo oscuro y tabla responsive.
+* **`css/cartelera.css`**: Estilos de la cartelera (portada pública), separados para no cambiar las pantallas de gestión. Usa las fuentes Cormorant Garamond y Jost (Google Fonts).
 * **`js/config.js`**: Dirección de la API y máximo de géneros por producción, en un solo lugar.
 * **`js/api.js`**: Única capa que usa `fetch`. Unifica los tres formatos de error del backend.
 * **`js/crud.js`**: Motor genérico de listar, crear, editar y eliminar.
@@ -94,17 +95,17 @@ http://127.0.0.1:5500/index.html
 
 > **Importante:** No abras los `.html` con doble clic (`file://`). El navegador bloquea los módulos de JavaScript (`type="module"`) desde ese origen, por eso necesitan un servidor local. Tampoco lo abras en el puerto 5000, porque ese puerto es el de la API.
 
-Si en la pantalla de Inicio los contadores muestran números, el frontend ya está conectado con la API.
+Si la Cartelera muestra las producciones (o el aviso de que aún no hay ninguna) y las cifras del escenario tienen números, el frontend ya está conectado con la API.
 
 ---
 
 ## 5. Módulos del Catálogo (Pantallas 1 al 6)
 
-La interfaz tiene una pantalla de inicio y cinco módulos con la misma secuencia de operaciones CRUD:
+La interfaz tiene una cartelera de inicio y cinco módulos con la misma secuencia de operaciones CRUD:
 
 | Secuencia | Página | Módulo | Detalle |
 | :--- | :--- | :--- | :--- |
-| **1** | `index.html` | Inicio | Cuenta los registros de cada módulo y comprueba la conexión con la API |
+| **1** | `index.html` | Cartelera | Portada pública al estilo de un sitio de cine: película destacada con póster, carrete y cinta de celuloide; grilla de pósters con búsqueda, filtros por tipo y género y ficha de detalle. Las pantallas de gestión se abren desde el enlace «Gestionar» del pie |
 | **2** | `generos.html` | Géneros | Nombre, estado (Activo/Inactivo) y descripción |
 | **3** | `directores.html` | Directores | El campo se llama `nombres`, como en el modelo |
 | **4** | `productoras.html` | Productoras | Nombre, estado, eslogan y descripción |
@@ -169,7 +170,8 @@ El frontend es estático, así que no necesita build:
 ```
 Catalog-Media-Frontend/
 ├── css/
-│   └── estilos.css
+│   ├── estilos.css
+│   └── cartelera.css
 ├── js/
 │   ├── config.js
 │   ├── api.js
