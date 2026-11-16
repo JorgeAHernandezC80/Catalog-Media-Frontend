@@ -3,11 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inicio · Catálogo de Media</title>
-  <meta name="description" content="Panel de inicio del catálogo de películas y series.">
+  <title>Cartelera · Catálogo de Media</title>
+  <meta name="description" content="Cartelera de películas y series del Catálogo de Media.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Figtree:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/cartelera.css">
 </head>
-<body>
+<body class="cartelera">
   <a class="saltar" href="#contenido">Saltar al contenido</a>
 
   <header class="cabecera">
@@ -15,7 +19,7 @@
       <p class="marca">Catálogo de Media</p>
       <nav aria-label="Principal">
         <ul>
-        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="index.html" aria-current="page">Cartelera</a></li>
         <li><a href="generos.html">Géneros</a></li>
         <li><a href="directores.html">Directores</a></li>
         <li><a href="productoras.html">Productoras</a></li>
@@ -27,67 +31,78 @@
   </header>
 
   <main id="contenido">
-    <h1>Catálogo de películas y series</h1>
-    <p class="intro">Administra los cinco módulos del catálogo: géneros, directores, productoras, tipos y las producciones (media).
-      Esta aplicación consume la API REST del proyecto.</p>
-
-    <div id="mensaje"></div>
-
-    <section aria-labelledby="titulo-modulos">
-      <h2 id="titulo-modulos">Módulos</h2>
-      <ul class="tarjetas">
-        <li class="tarjeta">
-          <h3><a href="generos.html">Géneros</a></h3>
-          <p class="tarjeta-numero"><span data-conteo="generos">…</span> <span class="solo-lectores">géneros registrados</span></p>
-          <p>Clasifican las producciones.</p>
-        </li>
-        <li class="tarjeta">
-          <h3><a href="directores.html">Directores</a></h3>
-          <p class="tarjeta-numero"><span data-conteo="directores">…</span> <span class="solo-lectores">directores registrados</span></p>
-          <p>Quién dirige cada producción.</p>
-        </li>
-        <li class="tarjeta">
-          <h3><a href="productoras.html">Productoras</a></h3>
-          <p class="tarjeta-numero"><span data-conteo="productoras">…</span> <span class="solo-lectores">productoras registrados</span></p>
-          <p>Casas productoras.</p>
-        </li>
-        <li class="tarjeta">
-          <h3><a href="tipos.html">Tipos</a></h3>
-          <p class="tarjeta-numero"><span data-conteo="tipos">…</span> <span class="solo-lectores">tipos registrados</span></p>
-          <p>Película, serie y otros.</p>
-        </li>
-        <li class="tarjeta">
-          <h3><a href="media.html">Media</a></h3>
-          <p class="tarjeta-numero"><span data-conteo="media">…</span> <span class="solo-lectores">media registrados</span></p>
-          <p>El catálogo completo.</p>
-        </li>
-      </ul>
+    <!-- Película destacada: la última producción agregada al catálogo. -->
+    <section class="destacada" id="destacada" aria-labelledby="destacada-titulo">
+      <div class="destacada-fondo" id="destacada-fondo" aria-hidden="true"></div>
+      <div class="bombillas bombillas-arriba" aria-hidden="true"></div>
+      <div class="destacada-interior">
+        <div class="destacada-portada" id="destacada-portada"></div>
+        <div class="destacada-texto">
+          <p class="destacada-etiqueta" id="destacada-etiqueta">Cargando la cartelera…</p>
+          <h1 id="destacada-titulo">Catálogo de películas y series</h1>
+          <div class="destacada-datos" id="destacada-datos"></div>
+          <p class="destacada-sinopsis" id="destacada-sinopsis"></p>
+          <p class="destacada-creditos" id="destacada-creditos"></p>
+          <div class="destacada-acciones" id="destacada-acciones"></div>
+        </div>
+      </div>
+      <div class="bombillas bombillas-abajo" aria-hidden="true"></div>
     </section>
 
-    <section class="panel" aria-labelledby="titulo-reglas">
-      <h2 id="titulo-reglas">Reglas que verás en pantalla</h2>
-      <ul>
-        <li>Una producción debe tener de 1 a 5 géneros distintos, todos activos.</li>
-        <li>Director, Productora y Géneros deben estar activos para poder asignarlos.</li>
-        <li>El serial y la URL de cada producción son únicos.</li>
-        <li>No se puede eliminar un género, director, productora o tipo que esté en uso por alguna producción.</li>
-      </ul>
-    </section>
+    <div class="contenedor">
+      <div id="mensaje"></div>
+
+      <section aria-labelledby="titulo-cartelera">
+        <div class="cartelera-cabecera">
+          <h2 id="titulo-cartelera">En el catálogo</h2>
+          <p class="cartelera-total" id="cartelera-total" aria-live="polite"></p>
+        </div>
+
+        <div class="herramientas">
+          <div class="buscador">
+            <label for="buscar">Buscar por título</label>
+            <input id="buscar" type="search" placeholder="Ej.: Wildwood" autocomplete="off">
+          </div>
+          <div class="grupo-filtro" role="group" aria-label="Filtrar por tipo" id="filtro-tipo"></div>
+        </div>
+        <div class="grupo-filtro filtro-generos" role="group" aria-label="Filtrar por género" id="filtro-genero"></div>
+
+        <p class="cartelera-estado" id="cartelera-estado">Cargando producciones…</p>
+        <ul class="funciones" id="funciones" hidden></ul>
+      </section>
+
+      <section class="administrar" aria-labelledby="titulo-administrar">
+        <h2 id="titulo-administrar">Administrar el catálogo</h2>
+        <ul class="administrar-lista">
+          <li><a href="media.html">Producciones <span data-conteo="media">…</span></a></li>
+          <li><a href="generos.html">Géneros <span data-conteo="generos">…</span></a></li>
+          <li><a href="directores.html">Directores <span data-conteo="directores">…</span></a></li>
+          <li><a href="productoras.html">Productoras <span data-conteo="productoras">…</span></a></li>
+          <li><a href="tipos.html">Tipos <span data-conteo="tipos">…</span></a></li>
+        </ul>
+      </section>
+    </div>
   </main>
 
   <footer class="pie">
     <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
   </footer>
 
-  <dialog id="dialogo-confirmar" aria-labelledby="dialogo-titulo">
-    <form method="dialog">
-      <h2 id="dialogo-titulo">Confirmar eliminación</h2>
-      <p id="dialogo-texto"></p>
-      <div class="dialogo-botones">
-        <button class="boton boton-secundario" value="no">Cancelar</button>
-        <button class="boton boton-peligro" value="si">Sí, eliminar</button>
+  <!-- Ficha de una producción. Se llena desde js/inicio.js al hacer clic en un póster. -->
+  <dialog id="detalle" class="detalle" aria-labelledby="detalle-titulo">
+    <div class="detalle-interior">
+      <div class="detalle-portada" id="detalle-portada"></div>
+      <div class="detalle-texto">
+        <h2 id="detalle-titulo"></h2>
+        <div class="detalle-datos" id="detalle-datos"></div>
+        <p class="detalle-sinopsis" id="detalle-sinopsis"></p>
+        <dl class="detalle-ficha" id="detalle-ficha"></dl>
+        <div class="detalle-acciones">
+          <a class="boton boton-terciopelo" id="detalle-enlace" target="_blank" rel="noopener noreferrer">Ver producción</a>
+          <form method="dialog"><button class="boton boton-contorno">Cerrar</button></form>
+        </div>
       </div>
-    </form>
+    </div>
   </dialog>
 
   <script type="module" src="js/inicio.js"></script>

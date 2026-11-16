@@ -1,0 +1,767 @@
+/* Cartelera — experiencia de sala de cine premium.
+   Todo vive dentro de .cartelera para no contaminar las pantallas de administración. */
+
+.cartelera {
+  --sala: #120e14;
+  --sala-elevada: #1a141f;
+  --telon: #231a28;
+  --telon-claro: #2e2436;
+  --telon-profundo: #1c1522;
+  --terciopelo: #b3263a;
+  --terciopelo-oscuro: #8a1c2c;
+  --terciopelo-brillo: #d43a52;
+  --marquesina: #f2c14e;
+  --marquesina-suave: #e8b84a;
+  --marquesina-luz: #fff3c4;
+  --pantalla: #f7f1e9;
+  --penumbra: #a897a6;
+  --penumbra-suave: #7d6e7b;
+  --linea: #3a2f42;
+  --linea-suave: #2a2230;
+
+  --letrero: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --texto-base: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  background: var(--sala);
+  color: var(--pantalla);
+  font-family: var(--texto-base);
+  color-scheme: dark;
+  line-height: 1.5;
+}
+
+.cartelera a { color: var(--marquesina); }
+.cartelera :focus-visible {
+  outline: 2px solid var(--marquesina);
+  outline-offset: 3px;
+}
+
+/* ——— Cabecera ——— */
+.cartelera .cabecera {
+  background: linear-gradient(180deg, var(--sala-elevada) 0%, var(--sala) 100%);
+  border-bottom: 1px solid var(--linea-suave);
+  backdrop-filter: blur(8px);
+}
+
+.cartelera .marca {
+  font-family: var(--letrero);
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+  color: var(--marquesina);
+  text-shadow: 0 0 24px rgb(242 193 78 / 0.25);
+}
+
+.cartelera .cabecera nav a {
+  color: var(--penumbra);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.cartelera .cabecera nav a:hover {
+  color: var(--pantalla);
+  background: rgb(46 36 54 / 0.6);
+}
+
+.cartelera .cabecera nav a[aria-current="page"] {
+  background: var(--terciopelo);
+  color: #fff;
+  box-shadow: 0 0 20px rgb(179 38 58 / 0.35);
+}
+
+/* ——— Layout principal ——— */
+.cartelera main {
+  max-width: none;
+  padding: 0;
+}
+
+.cartelera .contenedor {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 4rem;
+}
+
+/* ——— Botones ——— */
+.cartelera .boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 0.72rem 1.45rem;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.cartelera .boton-terciopelo {
+  background: linear-gradient(180deg, var(--terciopelo-brillo) 0%, var(--terciopelo) 100%);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 16px rgb(179 38 58 / 0.35);
+}
+
+.cartelera .boton-terciopelo:hover {
+  background: linear-gradient(180deg, #e0455e 0%, var(--terciopelo-oscuro) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgb(179 38 58 / 0.45);
+}
+
+.cartelera .boton-contorno {
+  background: transparent;
+  color: var(--pantalla);
+  border: 1px solid var(--penumbra-suave);
+}
+
+.cartelera .boton-contorno:hover {
+  border-color: var(--pantalla);
+  background: rgb(255 255 255 / 0.05);
+}
+
+.enlace-boton {
+  font: inherit;
+  color: var(--marquesina);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ——— Destacada ——— */
+.destacada {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--telon-profundo);
+}
+
+.destacada-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.destacada-fondo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(42px) saturate(1.25) brightness(0.7);
+  transform: scale(1.18);
+  opacity: 0.5;
+}
+
+.destacada-fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg,
+      var(--sala) 0%,
+      rgb(18 14 20 / 0.92) 38%,
+      rgb(18 14 20 / 0.65) 68%,
+      rgb(18 14 20 / 0.35) 100%);
+}
+
+.destacada-interior {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 3.25rem 1.5rem 3.5rem;
+  display: grid;
+  grid-template-columns: minmax(200px, 270px) 1fr;
+  gap: 2.75rem;
+  align-items: center;
+}
+
+.destacada-portada {
+  aspect-ratio: 2 / 3;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow:
+    0 28px 64px rgb(0 0 0 / 0.65),
+    0 0 0 1px rgb(255 255 255 / 0.06);
+  background: var(--telon-claro);
+}
+
+.destacada-portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.destacada-texto {
+  max-width: 58ch;
+}
+
+.destacada-etiqueta {
+  margin: 0 0 0.5rem;
+  color: var(--marquesina);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.destacada h1 {
+  font-family: var(--letrero);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 6.5vw, 5.1rem);
+  line-height: 0.92;
+  letter-spacing: 0.015em;
+  margin: 0 0 1.1rem;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 0.4);
+}
+
+.destacada-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.9rem;
+  margin-bottom: 1.15rem;
+}
+
+.destacada-sinopsis {
+  margin: 0 0 1.1rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--pantalla);
+  opacity: 0.95;
+}
+
+.destacada-creditos {
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.6rem;
+  color: var(--penumbra);
+  font-size: 0.95rem;
+}
+
+.destacada-creditos strong {
+  color: var(--pantalla);
+  font-weight: 600;
+}
+
+.destacada-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.destacada-sin-pelicula .destacada-interior {
+  grid-template-columns: 1fr;
+}
+
+.destacada-sin-pelicula .destacada-portada {
+  display: none;
+}
+
+/* ——— Bombillas de marquesina ——— */
+.bombillas {
+  position: relative;
+  height: 16px;
+  background:
+    radial-gradient(circle, rgb(242 193 78 / 0.18) 3.5px, transparent 4.5px)
+    0 50% / 24px 16px repeat-x;
+}
+
+.bombillas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle,
+      var(--marquesina-luz) 0 1.6px,
+      var(--marquesina) 2.4px 3.6px,
+      rgb(242 193 78 / 0.4) 5.5px,
+      transparent 7.5px)
+    0 50% / 24px 16px repeat-x;
+  animation: encender 1.7s steps(28, end) 0.15s both;
+}
+
+.bombillas-abajo::after {
+  animation-delay: 0.45s;
+}
+
+@keyframes encender {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* ——— Datos y géneros ——— */
+.datos,
+.funcion-datos {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.dato {
+  border: 1px solid var(--linea);
+  border-radius: 3px;
+  padding: 0.12rem 0.55rem;
+  font-size: 0.82rem;
+  color: var(--penumbra);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.dato-tipo {
+  border-color: var(--marquesina);
+  color: var(--marquesina);
+  background: rgb(242 193 78 / 0.08);
+}
+
+.generos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.generos li {
+  background: rgb(246 239 230 / 0.09);
+  border-radius: 999px;
+  padding: 0.15rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--penumbra);
+}
+
+/* ——— Cabecera de cartelera + herramientas ——— */
+.cartelera-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.cartelera h2 {
+  font-family: var(--letrero);
+  font-weight: 800;
+  font-size: 2.35rem;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.cartelera-total {
+  margin: 0;
+  color: var(--penumbra);
+  font-size: 0.95rem;
+}
+
+.herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.buscador {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 280px;
+  max-width: 360px;
+}
+
+.buscador label {
+  font-size: 0.88rem;
+  color: var(--penumbra);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cartelera .buscador input {
+  background: var(--telon);
+  color: var(--pantalla);
+  border: 1px solid var(--linea);
+  border-radius: 5px;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.98rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cartelera .buscador input::placeholder {
+  color: var(--penumbra-suave);
+}
+
+.cartelera .buscador input:hover {
+  border-color: var(--penumbra-suave);
+}
+
+.cartelera .buscador input:focus {
+  border-color: var(--marquesina);
+  background: var(--telon-claro);
+  outline: none;
+}
+
+.grupo-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filtro-opcion {
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--penumbra);
+  background: transparent;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  padding: 0.38rem 1rem;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.filtro-opcion:hover {
+  color: var(--pantalla);
+  border-color: var(--penumbra);
+}
+
+.filtro-opcion[aria-pressed="true"] {
+  background: var(--pantalla);
+  border-color: var(--pantalla);
+  color: var(--sala);
+  font-weight: 600;
+}
+
+.filtro-generos {
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 720px) {
+  .filtro-generos {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+  }
+  .filtro-opcion {
+    white-space: nowrap;
+  }
+}
+
+.cartelera-estado {
+  color: var(--penumbra);
+  margin: 1.25rem 0 2.25rem;
+  font-size: 0.98rem;
+}
+
+/* ——— Grilla de pósters ——— */
+.funciones {
+  list-style: none;
+  margin: 0 0 3.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 2.1rem 1.35rem;
+}
+
+.funcion {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.funcion-portada {
+  display: block;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--telon);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.35);
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  transition: outline-color 0.18s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.funcion-portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.funcion:hover .funcion-portada,
+.funcion:focus-visible .funcion-portada {
+  outline-color: var(--marquesina);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+}
+
+.funcion:hover .funcion-portada img {
+  transform: scale(1.04);
+}
+
+.cartelera .funcion:focus-visible {
+  outline: none;
+}
+
+.funcion-titulo {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.3;
+  letter-spacing: 0.005em;
+}
+
+/* Póster vacío */
+.poster-vacio {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 1.1rem;
+  text-align: center;
+  background:
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.25) 0 5px, transparent 5px 20px),
+    linear-gradient(165deg, var(--terciopelo) 0%, var(--terciopelo-oscuro) 100%);
+}
+
+.poster-vacio span {
+  font-family: var(--letrero);
+  font-weight: 800;
+  font-size: 1.55rem;
+  line-height: 1.05;
+  color: var(--pantalla);
+  text-wrap: balance;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.4);
+}
+
+/* ——— Administrar (integrado a la metáfora) ——— */
+.administrar {
+  border-top: 1px solid var(--linea-suave);
+  padding-top: 2.5rem;
+  margin-top: 0.5rem;
+}
+
+.cartelera .administrar h2 {
+  font-size: 1.55rem;
+  margin-bottom: 1.15rem;
+  color: var(--pantalla);
+}
+
+.administrar-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.administrar-lista a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: var(--pantalla);
+  background: var(--telon);
+  border: 1px solid var(--linea);
+  border-radius: 5px;
+  padding: 0.6rem 1rem;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.administrar-lista a:hover {
+  border-color: var(--penumbra);
+  background: var(--telon-claro);
+  transform: translateY(-1px);
+}
+
+.administrar-lista span {
+  color: var(--marquesina);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92rem;
+}
+
+/* ——— Mensajes y pie ——— */
+.cartelera .mensaje-error {
+  background: #2e1218;
+  border: 1px solid #e07a7a;
+  color: #ffc9c9;
+  border-radius: 5px;
+}
+
+.cartelera .pie {
+  border-top: 1px solid var(--linea-suave);
+  color: var(--penumbra-suave);
+  font-size: 0.9rem;
+}
+
+/* ——— Ficha de detalle (dialog) ——— */
+.cartelera dialog.detalle {
+  background: var(--telon);
+  color: var(--pantalla);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  padding: 0;
+  width: min(880px, calc(100vw - 2rem));
+  max-width: none;
+  max-height: calc(100vh - 2rem);
+  box-shadow: 0 32px 80px rgb(0 0 0 / 0.7);
+}
+
+.cartelera dialog.detalle::backdrop {
+  background: rgb(8 5 10 / 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.detalle[open] {
+  animation: abrir-ficha 0.22s ease-out;
+}
+
+@keyframes abrir-ficha {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.detalle-interior {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+}
+
+.detalle-portada {
+  aspect-ratio: 2 / 3;
+  background: var(--telon-claro);
+}
+
+.detalle-portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detalle-texto {
+  padding: 1.9rem 1.9rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+}
+
+.cartelera .detalle h2 {
+  font-size: 2.4rem;
+  margin: 0;
+  text-wrap: balance;
+  line-height: 1.05;
+}
+
+.detalle-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.9rem;
+}
+
+.detalle-sinopsis {
+  margin: 0;
+  line-height: 1.65;
+  font-size: 1.02rem;
+}
+
+.detalle-ficha {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.35rem;
+  font-size: 0.95rem;
+}
+
+.detalle-ficha dt {
+  color: var(--penumbra);
+}
+
+.detalle-ficha dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.detalle-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+
+.detalle-acciones form {
+  margin: 0;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 720px) {
+  .destacada-interior {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    padding: 2.25rem 1.25rem 2.5rem;
+  }
+
+  .destacada-portada {
+    width: min(210px, 58vw);
+  }
+
+  .destacada-fondo::after {
+    background: linear-gradient(180deg, rgb(18 14 20 / 0.55) 0%, var(--sala) 72%);
+  }
+
+  .funciones {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem 1rem;
+  }
+
+  .detalle-interior {
+    grid-template-columns: 1fr;
+  }
+
+  .detalle-portada {
+    width: 52%;
+    margin: 1.6rem auto 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .cartelera .detalle h2 {
+    font-size: 1.9rem;
+  }
+}
+
+/* ——— Preferencia de movimiento reducido ——— */
+@media (prefers-reduced-motion: reduce) {
+  .bombillas::after,
+  .detalle[open] {
+    animation: none;
+  }
+
+  .funcion-portada,
+  .funcion-portada img,
+  .boton,
+  .administrar-lista a {
+    transition: none;
+  }
+}
