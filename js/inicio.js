@@ -1,6 +1,6 @@
 // Página de inicio en forma de cartelera de cine.
 // - Arriba, en el "escenario", muestra la última producción agregada como destacada,
-//   con su póster y una cinta de celuloide con las portadas del catálogo.
+//   con su póster y una claqueta (dibujada en SVG) que muestra sus datos.
 // - Abajo muestra todas las producciones como pósters, con búsqueda por título
 //   y filtros por tipo y por género.
 // - Al hacer clic en un póster se abre una ficha con el detalle.
@@ -9,8 +9,7 @@
 import { listar } from './api.js';
 import { el, mostrarError } from './ui.js';
 
-// ---------- Estado de la página ----------
-
+// Estado de la página
 const estado = {
   producciones: [],
   tipo: '',    // _id del tipo elegido ('' = todos)
@@ -41,7 +40,7 @@ const iconoPlay = () => {
 };
 const iconoFlecha = () => icono('M1 7h16 M12 2l5 5-5 5', 18, 14);
 
-// ---------- Utilidades ----------
+// Utilidades
 
 // Solo aceptamos enlaces http/https. El backend ya lo valida, pero si llegara
 // otra cosa (por ejemplo "javascript:..."), no la ponemos en un href ni en un src.
@@ -101,7 +100,7 @@ function listaGeneros(media) {
   return (media.generos ?? []).map((g) => el('li', {}, g.nombre ?? '(sin nombre)'));
 }
 
-// ---------- Escenario (película destacada) ----------
+// Escenario (película destacada) 
 
 // Quita los esqueletos de carga del escenario.
 function terminarCarga() {
@@ -149,26 +148,23 @@ function pintarDestacada(media) {
 
   $('#destacada-imagen').replaceChildren(poster(media, { perezoso: false }));
   portada.hidden = false;
+  pintarClaqueta(media);
 }
 
-// Cinta de celuloide: las portadas del catálogo como fotogramas.
-// Si ninguna producción tiene portada, la cinta no se muestra.
-function pintarCinta() {
-  const conPortada = estado.producciones.filter((m) => urlSegura(m.portada));
-  const contenedor = $('#cinta-contenedor');
-  contenedor.hidden = conPortada.length === 0;
-  if (!conPortada.length) return;
-
-  const cuadros = [];
-  for (let i = 0; i < 8; i++) {
-    const media = conPortada[i % conPortada.length];
-    cuadros.push(el('span', { class: 'cuadro' },
-      el('img', { src: urlSegura(media.portada), alt: '', loading: 'lazy', onerror: (e) => e.target.remove() })));
-  }
-  $('#cinta').replaceChildren(...cuadros);
+// Escribe los datos de la destacada en la claqueta del dibujo. Los textos largos
+// se recortan con "…" para que no se salgan del tablero.
+function pintarClaqueta(media) {
+  const recortar = (texto, maximo) => {
+    const limpio = String(texto ?? '—');
+    return limpio.length > maximo ? `${limpio.slice(0, maximo - 1)}…` : limpio;
+  };
+  $('#claqueta-produccion').textContent = recortar(media.titulo, 15);
+  $('#claqueta-director').textContent = recortar(media.director?.nombres, 15);
+  $('#claqueta-productora').textContent = recortar(media.productora?.nombre, 15);
+  $('#claqueta-anio').textContent = recortar(media.anoEstreno, 6);
 }
 
-// ---------- Filtros ----------
+// Filtros de tipo y género, que se pintan como botones. El botón activo tiene aria-pressed="true".
 
 function botonesFiltro(contenedor, opciones, valorActual, alElegir) {
   contenedor.replaceChildren(
@@ -215,8 +211,7 @@ function pintarFiltros() {
   );
 }
 
-// ---------- Cartelera ----------
-
+// Cartelera filtrada según el tipo, el género y el texto del buscador.
 function filtrar() {
   const texto = normalizar(estado.texto.trim());
   return estado.producciones.filter((m) =>
@@ -281,7 +276,7 @@ function limpiarFiltros() {
   pintarCartelera();
 }
 
-// ---------- Ficha de detalle ----------
+// Ficha de detalle de la producción, que se abre en un diálogo modal.
 
 function abrirDetalle(media) {
   $('#detalle-titulo').textContent = media.titulo;
@@ -312,7 +307,7 @@ $('#detalle').addEventListener('click', (evento) => {
   if (evento.target === evento.currentTarget) evento.currentTarget.close();
 });
 
-// ---------- Carga ----------
+// Carga las cifras de la barra inferior del escenario (número de producciones, géneros y directores).
 
 function ponerCifra(modulo, valor) {
   for (const nodo of document.querySelectorAll(`[data-cifra="${modulo}"]`)) nodo.textContent = valor;
@@ -332,7 +327,6 @@ async function cargarCartelera() {
     // Las más recientes primero; la primera es la destacada.
     estado.producciones = producciones.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     pintarDestacada(estado.producciones[0]);
-    pintarCinta();
     pintarFiltros();
     pintarCartelera();
     ponerCifra('media', producciones.length);
