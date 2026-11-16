@@ -13,3 +13,4 @@ export const API_URL = esLocal ? API_LOCAL : API_PUBLICA;
 
 // Máximo de géneros por producción. Debe coincidir con el backend (modelo Media).
 export const MAX_GENEROS = 5;
+export const MAX_PRODUCTORAS = 5;

@@ -37,7 +37,7 @@
 
   <main id="contenido">
     <h1>Media</h1>
-    <p class="intro">Películas y series del catálogo. Cada producción lleva Tipo, Director, Productora y de 1 a 5 géneros.</p>
+    <p class="intro">Películas y series del catálogo. Cada producción lleva Tipo, Director, de 1 a 5 productoras y de 1 a 5 géneros.</p>
 
     <section class="panel" aria-labelledby="titulo-formulario">
       <h2 id="titulo-formulario">Nueva producción</h2>
@@ -65,10 +65,6 @@
           <select id="director" name="director" required></select>
         </div>
         <div class="campo">
-          <label for="productora">Productora <span class="obligatorio">(obligatorio)</span></label>
-          <select id="productora" name="productora" required></select>
-        </div>
-        <div class="campo">
           <label for="url">URL de la producción <span class="obligatorio">(obligatorio)</span></label>
           <input id="url" name="url" type="url" required aria-describedby="url-ayuda" placeholder="https://…" autocomplete="off">
           <p class="ayuda" id="url-ayuda">Enlace único (http o https). No se puede repetir.</p>
@@ -81,6 +77,12 @@
           <label for="sinopsis">Sinopsis <span class="obligatorio">(obligatorio)</span></label>
           <textarea id="sinopsis" name="sinopsis" rows="4" required ></textarea>
         </div>
+        <fieldset class="campo campo-ancho grupo-generos">
+          <legend>Productoras <span class="obligatorio">(obligatorio: de 1 a 5)</span></legend>
+          <p class="ayuda" id="productoras-ayuda">Una película la pueden hacer varias productoras. Solo aparecen las activas.</p>
+          <div id="lista-productoras" class="lista-generos" aria-describedby="productoras-ayuda"></div>
+          <p id="contador-productoras" class="contador" aria-live="polite"></p>
+        </fieldset>
         <fieldset class="campo campo-ancho grupo-generos">
           <legend>Géneros <span class="obligatorio">(obligatorio: de 1 a 5)</span></legend>
           <p class="ayuda" id="generos-ayuda">Solo aparecen los géneros activos.</p>
@@ -117,7 +119,7 @@
             <th scope="col">Tipo</th>
             <th scope="col">Géneros</th>
             <th scope="col">Director</th>
-            <th scope="col">Productora</th>
+            <th scope="col">Productoras</th>
             <th scope="col">Fechas</th>
             <th scope="col">Acciones</th>
             </tr>
@@ -129,7 +131,7 @@
   </main>
 
   <footer class="pie">
-    <p>Proyecto Integrado II · IU Digital</p>
+    <p>Proyecto Integrado II · IU Digital · Frontend en HTML semántico, CSS y JavaScript sin frameworks.</p>
     <p>© 2026 Jorge A. Hernández C. Todos los derechos reservados.</p>
   </footer>
 

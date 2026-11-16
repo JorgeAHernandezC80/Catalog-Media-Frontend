@@ -54,7 +54,7 @@ El proyecto separa responsabilidades en capas, de forma parecida al patrón MVC 
 El backend valida las reglas. El frontend las hace visibles y evita los errores más comunes antes de enviar los datos:
 
 * **Varios Géneros:** Una producción lleva de **1 a 5 géneros distintos**. El selector bloquea el sexto y no deja guardar si no hay ninguno marcado.
-* **Solo Referencias Activas:** Director, Productora y Géneros deben estar en estado `Activo` para asignarlos, por eso los `Inactivo` no aparecen en las listas. Si al editar una producción ya tenía uno inactivo, se muestra marcado como *(Inactivo)*.
+* **Solo Referencias Activas:** Director, Productoras y Géneros deben estar en estado `Activo` para asignarlos, por eso los `Inactivo` no aparecen en las listas. Si al editar una producción ya tenía uno inactivo, se muestra marcado como *(Inactivo)*.
 * **Identificación Única:** Si el `serial` o la `url` ya existen, se muestra el mensaje del backend (`409 Conflict`).
 * **Sin Registros Huérfanos:** Si se intenta eliminar un registro que está en uso por alguna producción, se muestra el aviso del backend (`409 Conflict`).
 * **Confirmación al Eliminar:** Antes de borrar se abre un diálogo de confirmación (`<dialog>`).
@@ -124,7 +124,7 @@ Cada módulo usa estos endpoints de la API:
 
 **Ejemplo del cuerpo que envía el formulario de Media (`POST /api/v1/media`):**
 
-El campo `generos` se arma con las casillas marcadas, como una lista de IDs. Director, Productora y Tipo salen de listas desplegables y son un solo valor.
+Los campos `generos` y `productoras` se arman con las casillas marcadas, como listas de IDs (de 1 a 5 cada una, porque una película la pueden hacer varias productoras). Director y Tipo salen de listas desplegables y son un solo valor.
 ```json
 {
   "serial": "PEL-0001",
@@ -135,7 +135,7 @@ El campo `generos` se arma con las casillas marcadas, como una lista de IDs. Dir
   "anoEstreno": 2024,
   "generos": ["<id1>", "<id2>"],
   "director": "<idDirector>",
-  "productora": "<idProductora>",
+  "productoras": ["<idProductora1>", "<idProductora2>"],
   "tipo": "<idTipo>"
 }
 ```

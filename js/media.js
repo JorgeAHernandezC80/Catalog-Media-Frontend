@@ -1,15 +1,12 @@
 // Pantalla de Media (películas y series). Es la más completa: tiene listas
-// desplegables para Director, Productora y Tipo, y un selector de 1 a 5 géneros.
+// desplegables para Director y Tipo, y dos selectores de casillas: de 1 a 5 productoras y de 1 a 5 géneros.
 import { iniciarCrud } from './crud.js';
 import { listar } from './api.js';
-import { MAX_GENEROS } from './config.js';
+import { MAX_GENEROS, MAX_PRODUCTORAS } from './config.js';
 import { el, formatearFecha } from './ui.js';
 
 const selectDirector = document.querySelector('#director');
-const selectProductora = document.querySelector('#productora');
 const selectTipo = document.querySelector('#tipo');
-const listaGeneros = document.querySelector('#lista-generos');
-const contadorGeneros = document.querySelector('#contador-generos');
 const filtroGenero = document.querySelector('#filtro-genero');
 
 // Catálogos que se llenan desde la API (se vuelven a pedir tras cada cambio).
@@ -32,48 +29,77 @@ function pintarSelect(select, lista, etiqueta, idActual = '') {
   select.value = idActual;
 }
 
-// ---------- Selector de géneros (1 a 5) ----------
+// ---------- Selectores de casillas (1 a 5) ----------
 
-function actualizarGeneros() {
-  const marcados = listaGeneros.querySelectorAll('input:checked');
-  const total = marcados.length;
-  contadorGeneros.textContent = `${total} de ${MAX_GENEROS} seleccionados`;
+// Géneros y Productoras funcionan igual: una lista de casillas con mínimo 1 y máximo 5.
+// Esta función crea el selector una sola vez para cada uno, en vez de repetir el código.
+//   campo:    nombre del campo en la API ('generos' o 'productoras')
+//   maximo:   tope de elementos
+//   mensajeMinimo: texto cuando no hay ninguna casilla marcada
+//   vacio:    texto cuando no hay registros activos
+//   etiquetaDe: cómo se escribe el nombre de cada registro
+function crearSelectorMultiple({ campo, maximo, mensajeMinimo, vacio, etiquetaDe }) {
+  const lista = document.querySelector(`#lista-${campo}`);
+  const contador = document.querySelector(`#contador-${campo}`);
 
-  // Al llegar al máximo se bloquean los demás: es más claro que dejar marcar y fallar al enviar.
-  for (const caja of listaGeneros.querySelectorAll('input')) {
-    caja.disabled = total >= MAX_GENEROS && !caja.checked;
+  function actualizar() {
+    const total = lista.querySelectorAll('input:checked').length;
+    contador.textContent = `${total} de ${maximo} seleccionados`;
+
+    // Al llegar al máximo se bloquean los demás: es más claro que dejar marcar y fallar al enviar.
+    for (const caja of lista.querySelectorAll('input')) {
+      caja.disabled = total >= maximo && !caja.checked;
+    }
+
+    // Los checkbox no tienen "required" de grupo, así que el "al menos uno" se valida a mano
+    // con setCustomValidity; reportValidity() del formulario mostrará este texto.
+    const primera = lista.querySelector('input');
+    if (primera) primera.setCustomValidity(total === 0 ? mensajeMinimo : '');
   }
 
-  // Los checkbox no tienen "required" de grupo, así que el "al menos uno" se valida a mano
-  // con setCustomValidity; reportValidity() del formulario mostrará este texto.
-  const primera = listaGeneros.querySelector('input');
-  if (primera) primera.setCustomValidity(total === 0 ? 'Elige al menos un género.' : '');
-}
-
-function pintarGeneros(seleccionados = []) {
-  const visibles = catalogo.generos.filter((g) => g.estado !== 'Inactivo' || seleccionados.includes(g._id));
-  if (visibles.length === 0) {
-    listaGeneros.replaceChildren(
-      el('p', { class: 'ayuda' }, 'No hay géneros activos. Crea uno primero en la sección Géneros.')
-    );
-    contadorGeneros.textContent = '';
-    return;
-  }
-  listaGeneros.replaceChildren(
-    ...visibles.map((g) =>
-      el(
-        'label',
-        { class: 'opcion-genero' },
-        el('input', {
-          type: 'checkbox', name: 'generos', value: g._id,
-          checked: seleccionados.includes(g._id), onchange: actualizarGeneros
-        }),
-        el('span', {}, g.estado === 'Inactivo' ? `${g.nombre} (Inactivo)` : g.nombre)
+  // 'registros' son todos los de la API; 'seleccionados' los ids marcados (al editar).
+  function pintar(registros, seleccionados = []) {
+    const visibles = registros.filter((r) => r.estado !== 'Inactivo' || seleccionados.includes(r._id));
+    if (visibles.length === 0) {
+      lista.replaceChildren(el('p', { class: 'ayuda' }, vacio));
+      contador.textContent = '';
+      return;
+    }
+    lista.replaceChildren(
+      ...visibles.map((r) =>
+        el(
+          'label',
+          { class: 'opcion-genero' },
+          el('input', {
+            type: 'checkbox', name: campo, value: r._id,
+            checked: seleccionados.includes(r._id), onchange: actualizar
+          }),
+          el('span', {}, r.estado === 'Inactivo' ? `${etiquetaDe(r)} (Inactivo)` : etiquetaDe(r))
+        )
       )
-    )
-  );
-  actualizarGeneros();
+    );
+    actualizar();
+  }
+
+  const marcados = () => [...lista.querySelectorAll('input:checked')].map((c) => c.value);
+  return { pintar, marcados };
 }
+
+const selectorGeneros = crearSelectorMultiple({
+  campo: 'generos',
+  maximo: MAX_GENEROS,
+  mensajeMinimo: 'Elige al menos un género.',
+  vacio: 'No hay géneros activos. Crea uno primero en la sección Géneros.',
+  etiquetaDe: (g) => g.nombre
+});
+
+const selectorProductoras = crearSelectorMultiple({
+  campo: 'productoras',
+  maximo: MAX_PRODUCTORAS,
+  mensajeMinimo: 'Elige al menos una productora.',
+  vacio: 'No hay productoras activas. Crea una primero en la sección Productoras.',
+  etiquetaDe: (p) => p.nombre
+});
 
 // ---------- Carga de apoyo ----------
 
@@ -84,9 +110,9 @@ async function cargarApoyo() {
   catalogo = { generos, directores, productoras, tipos };
 
   pintarSelect(selectDirector, directores, (d) => d.nombres);
-  pintarSelect(selectProductora, productoras, (p) => p.nombre);
   pintarSelect(selectTipo, tipos, (t) => t.nombre);
-  pintarGeneros();
+  selectorProductoras.pintar(productoras);
+  selectorGeneros.pintar(generos);
 
   // El filtro conserva la opción elegida aunque se vuelva a pintar.
   const elegido = filtroGenero.value;
@@ -109,9 +135,10 @@ function leerFormulario(form) {
     portada: dato('portada'),
     anoEstreno: Number(dato('anoEstreno')),
     // El backend espera una LISTA de IDs en "generos", no un solo valor.
-    generos: [...listaGeneros.querySelectorAll('input:checked')].map((c) => c.value),
+    generos: selectorGeneros.marcados(),
     director: selectDirector.value,
-    productora: selectProductora.value,
+    // Igual que géneros: el backend espera una LISTA de IDs en "productoras".
+    productoras: selectorProductoras.marcados(),
     tipo: selectTipo.value
   };
 }
@@ -124,20 +151,19 @@ function llenarFormulario(form, media) {
   for (const campo of ['serial', 'titulo', 'sinopsis', 'url', 'portada', 'anoEstreno']) {
     form.elements[campo].value = media[campo] ?? '';
   }
-  const idsGeneros = (media.generos ?? []).map(idDe);
   pintarSelect(selectDirector, catalogo.directores, (d) => d.nombres, idDe(media.director));
-  pintarSelect(selectProductora, catalogo.productoras, (p) => p.nombre, idDe(media.productora));
   pintarSelect(selectTipo, catalogo.tipos, (t) => t.nombre, idDe(media.tipo));
-  pintarGeneros(idsGeneros);
+  selectorProductoras.pintar(catalogo.productoras, (media.productoras ?? []).map(idDe));
+  selectorGeneros.pintar(catalogo.generos, (media.generos ?? []).map(idDe));
 }
 
 // Al volver al modo "crear" se repintan las listas sin selección previa.
 function reiniciarFormulario() {
   if (!catalogo.generos.length && !catalogo.directores.length) return;
   pintarSelect(selectDirector, catalogo.directores, (d) => d.nombres);
-  pintarSelect(selectProductora, catalogo.productoras, (p) => p.nombre);
   pintarSelect(selectTipo, catalogo.tipos, (t) => t.nombre);
-  pintarGeneros();
+  selectorProductoras.pintar(catalogo.productoras);
+  selectorGeneros.pintar(catalogo.generos);
 }
 
 // ---------- Tabla ----------
@@ -147,6 +173,13 @@ const chipsGeneros = (media) =>
     'ul',
     { class: 'chips', 'aria-label': 'Géneros' },
     (media.generos ?? []).map((g) => el('li', { class: 'chip' }, g.nombre ?? '(sin nombre)'))
+  );
+
+const chipsProductoras = (media) =>
+  el(
+    'ul',
+    { class: 'chips', 'aria-label': 'Productoras' },
+    (media.productoras ?? []).map((p) => el('li', { class: 'chip' }, p.nombre ?? '(sin nombre)'))
   );
 
 function celdaTitulo(media) {
@@ -187,7 +220,7 @@ const crud = iniciarCrud({
     { titulo: 'Tipo', celda: (m) => m.tipo?.nombre ?? '—' },
     { titulo: 'Géneros', celda: chipsGeneros },
     { titulo: 'Director', celda: (m) => m.director?.nombres ?? '—' },
-    { titulo: 'Productora', celda: (m) => m.productora?.nombre ?? '—' },
+    { titulo: 'Productoras', celda: chipsProductoras },
     {
       titulo: 'Fechas',
       celda: (m) =>

@@ -9,7 +9,8 @@
 import { listar } from './api.js';
 import { el, mostrarError } from './ui.js';
 
-// Estado de la página
+// ---------- Estado de la página ----------
+
 const estado = {
   producciones: [],
   tipo: '',    // _id del tipo elegido ('' = todos)
@@ -40,7 +41,7 @@ const iconoPlay = () => {
 };
 const iconoFlecha = () => icono('M1 7h16 M12 2l5 5-5 5', 18, 14);
 
-// Utilidades
+// ---------- Utilidades ----------
 
 // Solo aceptamos enlaces http/https. El backend ya lo valida, pero si llegara
 // otra cosa (por ejemplo "javascript:..."), no la ponemos en un href ni en un src.
@@ -100,7 +101,7 @@ function listaGeneros(media) {
   return (media.generos ?? []).map((g) => el('li', {}, g.nombre ?? '(sin nombre)'));
 }
 
-// Escenario (película destacada) 
+// ---------- Escenario (película destacada) ----------
 
 // Quita los esqueletos de carga del escenario.
 function terminarCarga() {
@@ -160,11 +161,12 @@ function pintarClaqueta(media) {
   };
   $('#claqueta-produccion').textContent = recortar(media.titulo, 15);
   $('#claqueta-director').textContent = recortar(media.director?.nombres, 15);
-  $('#claqueta-productora').textContent = recortar(media.productora?.nombre, 15);
+  // La claqueta tiene un solo renglón: se muestra la primera productora.
+  $('#claqueta-productora').textContent = recortar(media.productoras?.[0]?.nombre, 15);
   $('#claqueta-anio').textContent = recortar(media.anoEstreno, 6);
 }
 
-// Filtros de tipo y género, que se pintan como botones. El botón activo tiene aria-pressed="true".
+// ---------- Filtros ----------
 
 function botonesFiltro(contenedor, opciones, valorActual, alElegir) {
   contenedor.replaceChildren(
@@ -211,7 +213,8 @@ function pintarFiltros() {
   );
 }
 
-// Cartelera filtrada según el tipo, el género y el texto del buscador.
+// ---------- Cartelera ----------
+
 function filtrar() {
   const texto = normalizar(estado.texto.trim());
   return estado.producciones.filter((m) =>
@@ -276,7 +279,7 @@ function limpiarFiltros() {
   pintarCartelera();
 }
 
-// Ficha de detalle de la producción, que se abre en un diálogo modal.
+// ---------- Ficha de detalle ----------
 
 function abrirDetalle(media) {
   $('#detalle-titulo').textContent = media.titulo;
@@ -287,7 +290,7 @@ function abrirDetalle(media) {
 
   const filas = [
     ['Director', media.director?.nombres],
-    ['Productora', media.productora?.nombre],
+    [(media.productoras?.length ?? 0) > 1 ? 'Productoras' : 'Productora', (media.productoras ?? []).map((p) => p.nombre).filter(Boolean).join(', ')],
     ['Serial', media.serial]
   ].filter(([, valor]) => valor);
   $('#detalle-ficha').replaceChildren(
@@ -307,7 +310,7 @@ $('#detalle').addEventListener('click', (evento) => {
   if (evento.target === evento.currentTarget) evento.currentTarget.close();
 });
 
-// Carga las cifras de la barra inferior del escenario (número de producciones, géneros y directores).
+// ---------- Carga ----------
 
 function ponerCifra(modulo, valor) {
   for (const nodo of document.querySelectorAll(`[data-cifra="${modulo}"]`)) nodo.textContent = valor;
