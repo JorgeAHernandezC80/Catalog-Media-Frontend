@@ -29,6 +29,8 @@ Este proyecto es la capa visual del catálogo multimedia. Con él no hace falta 
 
 > **Nota:** El uso de HTML semántico en lugar de ReactJS fue autorizado por el docente para esta evidencia.
 
+> **Sustentación técnica:** el funcionamiento de las pantallas, las funciones implementadas y la integración con el backend están explicados en [SUSTENTACION.md](SUSTENTACION.md).
+
 ---
 
 ## 2. Arquitectura del Proyecto (Capas del Frontend)
